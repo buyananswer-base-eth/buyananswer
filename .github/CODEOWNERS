@@ -1,0 +1,28 @@
+# Code owners — GitHub requests a review from the listed owner on matching pull requests.
+# The last matching pattern wins, so the most sensitive paths come last.
+
+*                                   @jaykomarraju
+
+# The escrow is deployed, immutable, and holds real USDC. Every change here is a redeployment
+# decision, not a refactor.
+/contracts/                         @jaykomarraju
+
+# `IBuyAnAnswerEscrow.sol` is byte-identical to the source verified on Basescan. Editing it breaks
+# the parity between this repository and the block explorer.
+/contracts/src/                     @jaykomarraju
+
+# Live deployment records — address and startBlock drive where real money moves and where the
+# indexer begins its backfill.
+/packages/shared/src/contracts/     @jaykomarraju
+
+# The sole writer of payment state off-chain.
+/workers/indexer/                   @jaykomarraju
+
+# Authentication and session handling.
+/workers/api/src/auth/              @jaykomarraju
+
+# Security posture and disclosure policy.
+/SECURITY.md                        @jaykomarraju
+
+# CI and repository automation.
+/.github/                           @jaykomarraju

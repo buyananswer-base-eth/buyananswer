@@ -1,0 +1,13 @@
+blank_issues_enabled: false
+contact_links:
+  - name: 🔒 Report a security vulnerability
+    url: https://github.com/buyananswer-base-eth/buyananswer/security/advisories/new
+    about: >-
+      Never report a vulnerability in a public issue. This opens a private advisory visible only to
+      maintainers. See SECURITY.md for scope and safe harbor.
+  - name: 💬 Ask a question or propose an idea
+    url: https://github.com/buyananswer-base-eth/buyananswer/discussions
+    about: For usage questions, design discussion, and half-formed ideas — before they become issues.
+  - name: 📖 How the system works
+    url: https://github.com/buyananswer-base-eth/buyananswer/blob/main/ARCHITECTURE.md
+    about: The architecture, the money lifecycle, and the live deployment addresses.

@@ -1,0 +1,59 @@
+name: ✨ Feature or change proposal
+description: Suggest new behaviour, or a change to existing behaviour.
+labels: ["enhancement"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Please open this **before** building something substantial — it's cheaper to disagree about
+        the approach here than in a pull request. See [CONTRIBUTING.md](../blob/main/CONTRIBUTING.md).
+
+  - type: textarea
+    id: problem
+    attributes:
+      label: The problem
+      description: >-
+        What's difficult or impossible today? Describe the situation, not the solution — the
+        strongest proposals start from a concrete problem someone actually hit.
+    validations:
+      required: true
+
+  - type: textarea
+    id: proposal
+    attributes:
+      label: What you'd like to happen
+    validations:
+      required: true
+
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternatives you considered
+      description: Including doing nothing — why isn't the current behaviour good enough?
+
+  - type: dropdown
+    id: component
+    attributes:
+      label: Which part of the system
+      options:
+        - Web app (apps/web)
+        - Smart contract (contracts)
+        - API Worker (workers/api)
+        - Indexer (workers/indexer)
+        - Farcaster frame (workers/frame)
+        - SDK / shared packages
+        - Developer experience, build, or CI
+        - Not sure
+    validations:
+      required: true
+
+  - type: checkboxes
+    id: contract-change
+    attributes:
+      label: Does this require a contract change?
+      description: >-
+        The escrow is deployed and **immutable** — it cannot be patched. Changing it means deploying
+        a new contract and migrating, which is a high bar.
+      options:
+        - label: This would require changing the deployed escrow contract
+        - label: I'd be willing to work on this

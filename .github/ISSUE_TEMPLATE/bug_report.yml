@@ -1,0 +1,85 @@
+name: 🐛 Bug report
+description: Something behaves incorrectly.
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        **If this is a security vulnerability, stop and report it privately** — Security tab →
+        Report a vulnerability. See [SECURITY.md](../blob/main/SECURITY.md). That includes anything
+        touching escrowed funds, authentication, or authorization, even if you're unsure it's
+        exploitable.
+
+  - type: textarea
+    id: what-happened
+    attributes:
+      label: What happened
+      description: What did you observe, and what did you expect instead?
+    validations:
+      required: true
+
+  - type: textarea
+    id: reproduce
+    attributes:
+      label: Steps to reproduce
+      description: >-
+        Be specific enough that someone else can hit it. Include a transaction hash or a question
+        link if the issue involves an on-chain action.
+      placeholder: |
+        1. Go to …
+        2. Connect wallet …
+        3. …
+    validations:
+      required: true
+
+  - type: dropdown
+    id: component
+    attributes:
+      label: Component
+      options:
+        - Web app (apps/web)
+        - Smart contract (contracts)
+        - API Worker (workers/api)
+        - Indexer (workers/indexer)
+        - Farcaster frame (workers/frame)
+        - SDK / shared packages
+        - Build, CI, or local dev setup
+        - Not sure
+    validations:
+      required: true
+
+  - type: dropdown
+    id: network
+    attributes:
+      label: Network
+      options:
+        - Base mainnet (8453)
+        - Base Sepolia (84532)
+        - Local development
+        - Not applicable
+    validations:
+      required: true
+
+  - type: input
+    id: wallet
+    attributes:
+      label: Wallet and browser
+      description: e.g. Coinbase Smart Wallet on Chrome 131, or Rainbow on iOS Safari.
+
+  - type: textarea
+    id: context
+    attributes:
+      label: Logs, screenshots, or anything else
+      description: >-
+        Console errors, failing test output, transaction hashes. **Never paste a private key, seed
+        phrase, API key, or session cookie.**
+
+  - type: checkboxes
+    id: checks
+    attributes:
+      label: Before submitting
+      options:
+        - label: This is not a security vulnerability (those go through private reporting)
+          required: true
+        - label: I searched existing issues for a duplicate
+          required: true

@@ -1,0 +1,60 @@
+# Dependency updates. Grouped so a routine bump is one reviewable PR rather than a dozen.
+# Node and wrangler majors are held back deliberately — see the `ignore` entries.
+version: 2
+
+updates:
+  # ── Root pnpm workspace (apps/*, packages/*, workers/*) ──
+  - package-ecosystem: npm
+    directory: "/"
+    schedule:
+      interval: weekly
+      day: monday
+    open-pull-requests-limit: 5
+    commit-message:
+      prefix: "chore(deps)"
+      prefix-development: "chore(deps-dev)"
+    groups:
+      dev-tooling:
+        patterns: ["typescript", "@biomejs/*", "vitest", "@vitest/*", "@types/*"]
+      cloudflare:
+        patterns: ["wrangler", "@cloudflare/*"]
+      web:
+        patterns: ["react", "react-dom", "react-router", "@react-router/*", "vite", "wagmi", "viem", "@tanstack/*"]
+    ignore:
+      # Wrangler 4.x hard-asserts Node >= 22 at runtime; this repo pins Node 20.19.5.
+      # Revisit together with the Node bump.
+      - dependency-name: "wrangler"
+        update-types: ["version-update:semver-major"]
+      # @cloudflare/vitest-pool-workers 0.6.x targets vitest 2.0–2.1 and bundles wrangler 3.
+      - dependency-name: "@cloudflare/vitest-pool-workers"
+        update-types: ["version-update:semver-major", "version-update:semver-minor"]
+      - dependency-name: "vitest"
+        update-types: ["version-update:semver-major"]
+      - dependency-name: "@types/node"
+        update-types: ["version-update:semver-major"]
+
+  # ── Playwright e2e suite (a standalone pnpm root, not a workspace member) ──
+  - package-ecosystem: npm
+    directory: "/e2e"
+    schedule:
+      interval: monthly
+    open-pull-requests-limit: 2
+    commit-message:
+      prefix: "chore(deps)"
+
+  # ── GitHub Actions ──
+  - package-ecosystem: github-actions
+    directory: "/"
+    schedule:
+      interval: monthly
+    commit-message:
+      prefix: "ci"
+    groups:
+      actions:
+        patterns: ["*"]
+
+  # NOTE: Foundry dependencies (forge-std, openzeppelin-contracts) are git submodules pinned to
+  # exact commits. Dependabot's gitsubmodule ecosystem would propose bumps, but the contract is
+  # already deployed and immutable — a dependency bump cannot reach it, and an unreviewed bump would
+  # silently break source↔Basescan parity for anyone reproducing the build. Update them by hand,
+  # deliberately, and only alongside a redeployment.
