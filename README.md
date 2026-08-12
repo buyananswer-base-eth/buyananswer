@@ -85,7 +85,6 @@ workers/frame/      Cloudflare Worker — Farcaster frame: ask + pay in-feed
 packages/shared/    DB schema, migrations, deployment records, on/off-chain ref codec
 packages/sdk/       Typed contract helpers (viem) — approve, ask, settle, withdraw
 packages/worker-kit/ Shared Worker plumbing: errors, logging, rate limits, idempotency
-e2e/                Playwright end-to-end suite (a standalone pnpm root, not a workspace member)
 ```
 
 The important boundary: **the indexer is the only component that writes payment state off-chain**,

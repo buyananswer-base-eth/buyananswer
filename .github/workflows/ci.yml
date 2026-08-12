@@ -4,10 +4,6 @@ on:
   push:
     branches: [main]
   pull_request:
-  # Nightly full E2E (see the `e2e` job's `if:` gate) + manual trigger. The fast `node` + `contracts`
-  # jobs still run per-PR; the heavy Playwright browser + local stack stay OFF the per-PR path.
-  schedule:
-    - cron: "0 7 * * *" # 07:00 UTC nightly
   workflow_dispatch:
 
 # Cancel superseded runs on the same ref.
@@ -107,71 +103,3 @@ jobs:
 
       - name: Run Slither (advisory — findings triaged in SECURITY.md)
         run: slither . --fail-none
-
-  # ── Playwright end-to-end (nightly / manual): drives the SSR web app + real API (+ indexer for the
-  #    on-chain journey) in a real browser. Kept OFF the per-PR path — the browser + local stack are
-  #    heavy, and the deterministic regressions already run in the `node` job's `pnpm test`. The
-  #    on-chain journey self-skips unless the E2E_* secrets are configured. (Session 15 / ADR-0034) ──
-  e2e:
-    name: e2e (playwright, nightly)
-    if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch'
-    runs-on: ubuntu-latest
-    timeout-minutes: 30
-    env:
-      # On-chain leg — provide these repo secrets to run the funded journey; absent ⇒ it skips cleanly.
-      E2E_RPC_URL: ${{ secrets.E2E_RPC_URL }}
-      E2E_WALLET_PK: ${{ secrets.E2E_WALLET_PK }}
-      E2E_RECONCILE_TOKEN: ${{ secrets.E2E_RECONCILE_TOKEN }}
-      E2E_ONCHAIN: ${{ secrets.E2E_RPC_URL != '' && '1' || '' }}
-    steps:
-      - uses: actions/checkout@v4
-
-      - name: Install pnpm
-        uses: pnpm/action-setup@v4
-
-      - name: Setup Node
-        uses: actions/setup-node@v4
-        with:
-          node-version-file: .nvmrc
-          cache: pnpm
-
-      - name: Install dependencies
-        run: pnpm install --frozen-lockfile
-
-      # The dev servers import `@buyananswer/shared` etc. from their git-ignored dist/.
-      - name: Build workspace libraries
-        run: pnpm --filter "./packages/*" build
-
-      # The e2e project is a standalone pnpm root (not a workspace member), so its heavy deps never
-      # touch the base install above.
-      - name: Install e2e deps
-        run: pnpm install --frozen-lockfile
-        working-directory: e2e
-
-      - name: Cache Playwright browsers
-        uses: actions/cache@v4
-        with:
-          path: ~/.cache/ms-playwright
-          key: playwright-${{ runner.os }}-chromium-1.61.0
-
-      - name: Install Playwright Chromium
-        run: pnpm exec playwright install --with-deps chromium
-        working-directory: e2e
-
-      # Only when the on-chain secrets are present: give the indexer its RPC + reconcile token so its
-      # dev server can read Base Sepolia and accept the test's /reconcile nudge.
-      - name: Configure indexer (on-chain journey only)
-        if: env.E2E_ONCHAIN == '1'
-        run: printf 'RPC_URL_BASE_SEPOLIA=%s\nRECONCILE_TOKEN=%s\n' "$E2E_RPC_URL" "$E2E_RECONCILE_TOKEN" > workers/indexer/.dev.vars
-
-      - name: Run E2E (board + onboard always; on-chain when gated)
-        run: pnpm exec playwright test
-        working-directory: e2e
-
-      - name: Upload Playwright report
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: playwright-report
-          path: e2e/playwright-report
-          retention-days: 7

@@ -9,13 +9,13 @@
 //   • the ask UI  — app/components/ask/AskGate.tsx (AskWalletGate → <AskNetworkGuard/>)
 // and the switch button targets DEFAULT_ASK_CHAIN. This locks that guard as DEFAULT-DENY: only a chain
 // with a live escrow deployment passes; anything else is always blocked. The React wiring itself is
-// exercised by the Playwright onboard/ask journeys (e2e/, ADR-0034); here we pin the predicate the
+// exercised by the out-of-tree Playwright onboard/ask journeys; here we pin the predicate the
 // wiring depends on.
 //
 // UPDATED at the Base-mainnet deploy (ADR-0038). Base mainnet was previously the headline example of a
 // "supported but not ask-capable" chain — it is now LIVE, so the allow-list is {Base mainnet, Base
-// Sepolia} and the default flipped to mainnet. Base Sepolia deliberately STAYS ask-capable: the e2e
-// harness runs its money paths there, and de-listing it would silently break that whole tier.
+// Sepolia} and the default flipped to mainnet. Base Sepolia deliberately STAYS ask-capable: the
+// out-of-tree harness runs its money paths there, and de-listing it would silently break that tier.
 // What must not change is the SHAPE of the guard: default-deny, driven solely by a live deployment.
 
 import { BASE_CHAIN_ID, BASE_SEPOLIA_CHAIN_ID } from "@buyananswer/shared";

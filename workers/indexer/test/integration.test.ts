@@ -7,7 +7,7 @@
 // `reconcile()` into a real Miniflare D1, and we assert the exact money-state columns the API surface
 // (workers/api `presentQuestion` / the answer paywall, Session 7) and the web status presenter
 // (apps/web `status.ts`, Session 12) read. The on-chain half (a genuine Base Sepolia tx) is the gated
-// Playwright journey in e2e/ (ADR-0034); this is its always-green, no-funds counterpart.
+// out-of-tree Playwright journey; this is its always-green, no-funds counterpart.
 //
 // Because the indexer is the SOLE writer of money-state (ADR-0024), proving reconcile writes the right
 // D1 state is equivalent to proving the UI reflects it — the UI/API only ever READ these columns.

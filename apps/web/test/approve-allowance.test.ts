@@ -9,7 +9,8 @@
 // `lib/allowance.ts` is the fix, and this pins its contract:
 //   F1 — a stale read is retried until the allowance shows up, and the retry loop is strictly bounded;
 //   F2 — a reverted approve fails with its OWN message instead of surfacing later as F1 with no cause.
-// The React wiring that calls it is exercised by the multi-actor harness on the live chain (e2e/).
+// The React wiring that calls it is exercised by a multi-actor harness on the live chain, which is
+// maintained out of tree.
 
 import { describe, expect, it } from "vitest";
 import {

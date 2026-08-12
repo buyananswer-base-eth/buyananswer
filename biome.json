@@ -15,11 +15,7 @@
       "contracts/out/**",
       "contracts/cache/**",
       "contracts/.venv/**",
-      "packages/shared/src/contracts/escrowAbi.ts",
-      "e2e/.harness/**",
-      "e2e/test-results/**",
-      "e2e/playwright-report/**",
-      "e2e/blob-report/**"
+      "packages/shared/src/contracts/escrowAbi.ts"
     ]
   },
   "organizeImports": {

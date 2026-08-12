@@ -1,9 +1,0 @@
-node_modules
-test-results
-playwright-report
-blob-report
-.env
-.last-run.json
-# Generated testnet keyset + run state for the multi-actor harness (Session 17). NEVER commit:
-# it holds real (testnet) private keys, and this repo becomes public.
-.harness/

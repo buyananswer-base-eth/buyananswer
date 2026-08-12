@@ -10,7 +10,7 @@
 //                         skipped and NEVER fabricates a row — the off-chain draft is always first.
 //
 // These lock in ADR-0024 / FUNCTIONAL_SPEC §6 against a real Miniflare D1 with a mocked chain (no RPC).
-// The corresponding on-chain proof is the gated Playwright journey (see e2e/, ADR-0034).
+// The corresponding on-chain proof is a gated Playwright journey, maintained out of tree.
 
 import { questions } from "@buyananswer/shared";
 import { describe, expect, it } from "vitest";
