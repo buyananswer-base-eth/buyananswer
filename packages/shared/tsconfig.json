@@ -1,0 +1,11 @@
+{
+  "extends": "../../tsconfig.base.json",
+  "compilerOptions": {
+    "rootDir": "src",
+    "outDir": "dist",
+    // `node` types are needed by the constraint test (reads migration SQL via node:fs). The library
+    // build (tsconfig.build.json) excludes *.test.ts, so this never reaches shipped code.
+    "types": ["node"]
+  },
+  "include": ["src"]
+}

@@ -1,0 +1,5 @@
+# Isolate e2e/ as its own pnpm project so `pnpm install` HERE installs only the Playwright + viem
+# deps into e2e/node_modules. The heavy browser toolchain stays OUT of the repo's base install path,
+# keeping the fast per-PR `node` CI job quick (Session 15 / ADR-0034). This dir is NOT a member of the
+# root workspace (root pnpm-workspace.yaml globs only apps/*, workers/*, packages/*).
+packages: []

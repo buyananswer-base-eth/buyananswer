@@ -1,0 +1,39 @@
+{
+  "name": "@buyananswer/api",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "license": "MIT",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    }
+  },
+  "scripts": {
+    "dev": "wrangler dev",
+    "db:migrate:local": "wrangler d1 migrations apply buyananswer-dev --local",
+    "db:migrate:remote": "wrangler d1 migrations apply buyananswer-dev --remote",
+    "db:seed:local": "wrangler d1 execute buyananswer-dev --local --file=./seed/seed.dev.sql",
+    "typecheck": "tsc --noEmit",
+    "build": "tsc -p tsconfig.build.json",
+    "test": "vitest run"
+  },
+  "dependencies": {
+    "@buyananswer/shared": "workspace:*",
+    "@buyananswer/worker-kit": "workspace:*",
+    "drizzle-orm": "catalog:",
+    "hono": "catalog:",
+    "viem": "catalog:",
+    "zod": "catalog:"
+  },
+  "devDependencies": {
+    "@cloudflare/vitest-pool-workers": "catalog:",
+    "@cloudflare/workers-types": "catalog:",
+    "typescript": "catalog:",
+    "vitest": "catalog:",
+    "wrangler": "catalog:"
+  }
+}

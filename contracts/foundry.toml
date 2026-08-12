@@ -1,0 +1,50 @@
+[profile.default]
+src = "src"
+out = "out"
+libs = ["lib"]
+test = "test"
+script = "script"
+
+# Pin the compiler + EVM target so local and CI builds are byte-for-byte reproducible.
+# Base (and Base Sepolia) support the Cancun EVM.
+solc = "0.8.28"
+evm_version = "cancun"
+optimizer = true
+optimizer_runs = 200
+bytecode_hash = "none"
+
+# Money contract: no filesystem or external calls from tests unless explicitly opted in later.
+ffi = false
+
+# Named RPC + verifier config for deploys (see script/Deploy.s.sol + .env.example).
+# Values are read from the environment at runtime — no secrets or keys live in this file.
+[rpc_endpoints]
+base_sepolia = "${BASE_SEPOLIA_RPC_URL}"
+base = "${BASE_RPC_URL}"
+
+[etherscan]
+# Etherscan V2 unified API — ONE host for every chain, routed by `chain`. The per-chain hosts
+# (api.basescan.org / api-sepolia.basescan.org) are V1 and were retired: they now reject every
+# request with "You are using a deprecated V1 endpoint". Do not reintroduce them.
+# No explicit `url`: foundry >=1.x targets the V2 unified endpoint itself and appends the required
+# `chainid`. Pinning a `url` here suppresses that and the request is rejected as missing chainid.
+base_sepolia = {key = "${ETHERSCAN_API_KEY}", chain = 84532}
+base = {key = "${ETHERSCAN_API_KEY}", chain = 8453}
+
+[fuzz]
+runs = 512
+
+[invariant]
+runs = 256
+depth = 64
+fail_on_revert = true
+
+[fmt]
+line_length = 100
+tab_width = 4
+bracket_spacing = false
+int_types = "long"
+quote_style = "double"
+number_underscore = "thousands"
+
+# See more config options https://github.com/foundry-rs/foundry/blob/master/crates/config/README.md#all-options

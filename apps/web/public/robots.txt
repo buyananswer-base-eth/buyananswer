@@ -1,0 +1,43 @@
+# BuyAnAnswer — robots policy.
+# We want to be found: by search engines AND by AI assistants. Everything public is crawlable.
+
+User-agent: *
+Allow: /
+# Signed-in app surfaces carry no crawlable content (they render client-side after auth) — skip them.
+Disallow: /dashboard
+Disallow: /settings/
+Disallow: /questions/
+
+# Explicitly welcome AI / LLM crawlers and answer engines.
+User-agent: GPTBot
+Allow: /
+User-agent: OAI-SearchBot
+Allow: /
+User-agent: ChatGPT-User
+Allow: /
+User-agent: ClaudeBot
+Allow: /
+User-agent: Claude-Web
+Allow: /
+User-agent: anthropic-ai
+Allow: /
+User-agent: PerplexityBot
+Allow: /
+User-agent: Perplexity-User
+Allow: /
+User-agent: Google-Extended
+Allow: /
+User-agent: Applebot-Extended
+Allow: /
+User-agent: Bytespider
+Allow: /
+User-agent: Amazonbot
+Allow: /
+User-agent: CCBot
+Allow: /
+
+# AI-friendly context lives here (see the llms.txt convention: https://llmstxt.org).
+# LLM context: /llms.txt
+# Full copy: /about.md   Agent guide: /agents.md
+
+Sitemap: https://buyananswer.com/sitemap.xml

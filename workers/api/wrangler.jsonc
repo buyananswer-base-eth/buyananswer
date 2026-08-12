@@ -1,0 +1,94 @@
+{
+  // Cloudflare Worker config for the BuyAnAnswer API. NO secrets or account-scoped ids live here:
+  // `account_id` and any API tokens come from the environment (`.dev.vars`, CI secrets), never git.
+  // The D1 `database_id` below is a non-secret placeholder — `--local` ignores it (Miniflare keys the
+  // local SQLite by binding + database_name). Create the real remote DB with `wrangler d1 create
+  // buyananswer-dev` and set its id per-environment out of band (see .dev.vars.example). (ADR-0021)
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "buyananswer-api",
+  "main": "src/index.ts",
+  "compatibility_date": "2025-02-04",
+  "compatibility_flags": ["nodejs_compat"],
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "buyananswer-dev",
+      "database_id": "00000000-0000-0000-0000-000000000000",
+      // Migrations are the shared source of truth, generated from packages/shared/src/db/schema.ts.
+      "migrations_dir": "../../packages/shared/migrations"
+    }
+  ],
+  // SIWE nonces + sessions live in KV (ephemeral, TTL-friendly; ADR-0022). The `id`/`preview_id`
+  // below are non-secret placeholders — Miniflare (`--local` / vitest-pool-workers) keys the local
+  // namespace by binding name and ignores them. Create the real namespace out of band with
+  // `wrangler kv namespace create SESSIONS` and set its id per-environment (never committed).
+  "kv_namespaces": [
+    {
+      "binding": "SESSIONS",
+      "id": "00000000000000000000000000000000",
+      "preview_id": "00000000000000000000000000000000"
+    },
+    // Abuse controls (Session 14, ADR-0032): fixed-window rate-limit counters (`rl:` keys) + client
+    // idempotency records (`idem:` keys). A dedicated namespace so limiter churn never evicts a session.
+    // Placeholder id — Miniflare (`--local` / vitest-pool-workers) keys the local namespace by binding
+    // name; create the real one out of band with `wrangler kv namespace create RATELIMIT`.
+    {
+      "binding": "RATELIMIT",
+      "id": "00000000000000000000000000000001",
+      "preview_id": "00000000000000000000000000000001"
+    }
+  ],
+  // Avatar images (png/jpeg/webp, ≤5 MB). The bucket NAME is not a secret; account id + tokens come
+  // from the environment, never git. Create it out of band with `wrangler r2 bucket create
+  // buyananswer-avatars`.
+  "r2_buckets": [
+    {
+      "binding": "AVATARS",
+      "bucket_name": "buyananswer-avatars"
+    }
+  ],
+  "vars": {
+    // Public base URL for serving avatars. Empty ⇒ the Worker serves them itself at `/avatars/:key`
+    // (avatar_url is built from the request origin). Set to an R2 public bucket / CDN domain in prod.
+    "AVATAR_PUBLIC_BASE_URL": ""
+  },
+
+  // ───────────────────────────────────────────────────────────────────────────────────────────
+  // PRODUCTION (Base mainnet) — deploy with `wrangler deploy --env production` (ADR-0038).
+  //
+  // ⚠ Wrangler named environments do NOT inherit `vars`, `d1_databases`, `kv_namespaces`, `r2_buckets`
+  //   or `triggers` from the top level — every binding is redeclared in full below. Editing a binding
+  //   above does NOT change production; change both.
+  //
+  // The ids below are the REAL provisioned resources (created 2026-08-12). They are resource
+  // identifiers, NOT credentials — useless without account auth — so they are committed for
+  // reproducible deploys. `account_id` still comes from CLOUDFLARE_ACCOUNT_ID in the environment,
+  // never git. Secrets (via `wrangler secret put --env production`): none for the API today.
+  // ───────────────────────────────────────────────────────────────────────────────────────────
+  "env": {
+    "production": {
+      "name": "buyananswer-api-production",
+      // Custom domain — wrangler creates the DNS record + cert on deploy (zone must exist).
+      // The web app's SSR_API_ORIGIN points here. Browser calls are same-origin via /api/* so the
+      // SameSite=Lax session cookie and the SIWE domain binding keep working (ADR-0022).
+      "routes": [{ "pattern": "api.buyananswer.com", "custom_domain": true }],
+      "d1_databases": [
+        {
+          "binding": "DB",
+          "database_name": "buyananswer-production",
+          "database_id": "a5778629-984e-4a9f-8483-77b9edd852e2",
+          "migrations_dir": "../../packages/shared/migrations"
+        }
+      ],
+      "kv_namespaces": [
+        { "binding": "SESSIONS", "id": "49def5d1dbc14545820462c663b66a3d" },
+        { "binding": "RATELIMIT", "id": "97269f7354e442f495f0284dfa9cb054" }
+      ],
+      "r2_buckets": [{ "binding": "AVATARS", "bucket_name": "buyananswer-avatars-production" }],
+      "vars": {
+        // Serve avatars from the app origin in production rather than the Worker's own route.
+        "AVATAR_PUBLIC_BASE_URL": ""
+      }
+    }
+  }
+}

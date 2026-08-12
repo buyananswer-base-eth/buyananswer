@@ -1,0 +1,138 @@
+/* SPDX-License-Identifier: MIT */
+/* Ask + pay flow. Mobile-first: a single centred column that reads well at ~390px. */
+
+.creatorHead {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+}
+
+.creatorMeta {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.creatorName {
+  font-size: var(--text-lg);
+  font-weight: 640;
+  letter-spacing: -0.01em;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.creatorHandle {
+  color: var(--text-muted);
+  font-size: var(--text-sm);
+}
+
+.balanceRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: var(--space-3);
+  font-size: var(--text-sm);
+  color: var(--text-muted);
+}
+
+.balanceValue {
+  font-variant-numeric: tabular-nums;
+  color: var(--text);
+  font-weight: 560;
+}
+
+/* Total the wallet will be asked to escrow — the headline number before paying. */
+.total {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  padding: var(--space-3) var(--space-4);
+  background: var(--surface-2);
+  border-radius: var(--radius-md);
+}
+
+.totalLabel {
+  color: var(--text-muted);
+  font-size: var(--text-sm);
+}
+
+.totalValue {
+  font-size: var(--text-xl);
+  font-weight: 680;
+  letter-spacing: -0.01em;
+  font-variant-numeric: tabular-nums;
+}
+
+/* A live status line for the pay steps (permit/approve/pending/indexing…). */
+.status {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  padding: var(--space-3) var(--space-4);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  background: var(--surface-2);
+  font-size: var(--text-sm);
+}
+
+.statusText {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.statusHint {
+  color: var(--text-subtle);
+  font-size: var(--text-xs);
+}
+
+.tone-danger {
+  border-color: color-mix(in srgb, var(--danger) 40%, var(--border));
+  background: var(--danger-subtle);
+}
+
+.tone-warning {
+  border-color: color-mix(in srgb, var(--warning) 40%, var(--border));
+  background: var(--warning-subtle);
+}
+
+.tone-success {
+  border-color: color-mix(in srgb, var(--success) 40%, var(--border));
+  background: var(--success-subtle);
+}
+
+/* Confirmed success card. */
+.done {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: var(--space-4);
+  padding: var(--space-4) 0;
+}
+
+.check {
+  display: grid;
+  place-items: center;
+  width: 56px;
+  height: 56px;
+  border-radius: var(--radius-pill);
+  background: var(--success-subtle);
+  color: var(--success);
+  font-size: 1.75rem;
+  font-weight: 700;
+}
+
+.txLink {
+  color: var(--accent);
+  font-size: var(--text-sm);
+  word-break: break-all;
+}
+
+.actions {
+  display: flex;
+  gap: var(--space-3);
+  flex-wrap: wrap;
+}

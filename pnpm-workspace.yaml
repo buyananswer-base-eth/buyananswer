@@ -1,0 +1,30 @@
+packages:
+  - apps/*
+  - workers/*
+  - packages/*
+
+# Single-sourced tool versions shared across every workspace package.
+# Reference with "catalog:" in a package's devDependencies.
+catalog:
+  typescript: ^5.7.3
+  vitest: ^2.1.9
+  '@biomejs/biome': ^1.9.4
+  # Data layer (Session 5): D1 (SQLite) via Drizzle + Cloudflare tooling.
+  drizzle-orm: ^0.44.2
+  drizzle-kit: ^0.31.1
+  # Worker API (Session 6): Hono router, zod validation, viem (SIWE verify + nonce).
+  hono: ^4.13.1
+  zod: ^3.24.1
+  viem: ^2.21.0
+  # Vitest pool that runs tests inside a real workerd + Miniflare (D1/KV/R2). 0.6.x targets
+  # vitest 2.0–2.1 and bundles wrangler 3 / miniflare 3, so it stays Node-20 safe (ADR-0021).
+  '@cloudflare/vitest-pool-workers': ^0.6.16
+  # Wrangler 3.x: every wrangler 4.x hard-asserts Node >=22 at runtime, but this repo pins
+  # Node 20.19.5. 3.114.x runs on Node 20 and fully supports `d1 migrations apply --local`.
+  # Revisit (bump to wrangler 4) when the repo moves to Node 22. (ADR-0021)
+  wrangler: ^3.114.0
+  '@cloudflare/workers-types': ^4.20250620.0
+  # Local, in-memory SQLite used only to prove schema constraints in Vitest.
+  better-sqlite3: ^11.8.0
+  '@types/better-sqlite3': ^7.6.11
+  '@types/node': ^20.19.0

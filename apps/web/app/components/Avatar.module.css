@@ -1,0 +1,22 @@
+.avatar {
+  display: inline-grid;
+  place-items: center;
+  border-radius: var(--radius-pill);
+  flex-shrink: 0;
+  overflow: hidden;
+  border: 1px solid var(--border);
+  background: var(--surface-2);
+}
+
+.image {
+  object-fit: cover;
+}
+
+.fallback {
+  font-weight: 650;
+  letter-spacing: 0.02em;
+  color: var(--text-on-accent);
+  background: linear-gradient(135deg, var(--accent), var(--accent-active));
+  border-color: transparent;
+  user-select: none;
+}

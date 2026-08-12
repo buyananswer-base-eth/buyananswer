@@ -1,0 +1,403 @@
+{
+  "id": "940dbb83-25bf-40f9-92d4-ea78e3e2f255",
+  "prevId": "ea472dab-6f53-4c68-b0ce-1859bda662cb",
+  "version": "6",
+  "dialect": "sqlite",
+  "tables": {
+    "answers": {
+      "name": "answers",
+      "columns": {
+        "question_id": {
+          "name": "question_id",
+          "type": "text",
+          "primaryKey": true,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "body": {
+          "name": "body",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "submitted_at": {
+          "name": "submitted_at",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": "(unixepoch())"
+        },
+        "revealed_at": {
+          "name": "revealed_at",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": "(unixepoch())"
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "answers_question_id_questions_id_fk": {
+          "name": "answers_question_id_questions_id_fk",
+          "tableFrom": "answers",
+          "columnsFrom": ["question_id"],
+          "tableTo": "questions",
+          "columnsTo": ["id"],
+          "onUpdate": "cascade",
+          "onDelete": "cascade"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "checkConstraints": {
+        "answers_body_len": {
+          "name": "answers_body_len",
+          "value": "length(\"answers\".\"body\") BETWEEN 1 AND 5000"
+        }
+      }
+    },
+    "creators": {
+      "name": "creators",
+      "columns": {
+        "wallet": {
+          "name": "wallet",
+          "type": "text",
+          "primaryKey": true,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "handle": {
+          "name": "handle",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "display_name": {
+          "name": "display_name",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "headline": {
+          "name": "headline",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "bio": {
+          "name": "bio",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "avatar_url": {
+          "name": "avatar_url",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "links": {
+          "name": "links",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "min_price_usdc": {
+          "name": "min_price_usdc",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": "(unixepoch())"
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": "(unixepoch())"
+        }
+      },
+      "indexes": {
+        "creators_handle_unique": {
+          "name": "creators_handle_unique",
+          "columns": ["handle"],
+          "isUnique": true
+        }
+      },
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "checkConstraints": {
+        "creators_wallet_addr": {
+          "name": "creators_wallet_addr",
+          "value": "length(wallet) = 42 AND substr(wallet, 1, 2) = '0x' AND substr(wallet, 3) NOT GLOB '*[^0-9a-f]*'"
+        },
+        "creators_handle_fmt": {
+          "name": "creators_handle_fmt",
+          "value": "length(\"creators\".\"handle\") BETWEEN 3 AND 30 AND \"creators\".\"handle\" NOT GLOB '*[^a-z0-9_]*'"
+        },
+        "creators_display_name_len": {
+          "name": "creators_display_name_len",
+          "value": "length(\"creators\".\"display_name\") BETWEEN 1 AND 50"
+        },
+        "creators_headline_len": {
+          "name": "creators_headline_len",
+          "value": "\"creators\".\"headline\" IS NULL OR length(\"creators\".\"headline\") <= 80"
+        },
+        "creators_bio_len": {
+          "name": "creators_bio_len",
+          "value": "\"creators\".\"bio\" IS NULL OR length(\"creators\".\"bio\") <= 500"
+        },
+        "creators_min_price": {
+          "name": "creators_min_price",
+          "value": "length(min_price_usdc) BETWEEN 1 AND 39 AND min_price_usdc NOT GLOB '*[^0-9]*' AND CAST(\"creators\".\"min_price_usdc\" AS INTEGER) BETWEEN 1000000 AND 10000000000"
+        }
+      }
+    },
+    "indexer_cursor": {
+      "name": "indexer_cursor",
+      "columns": {
+        "chain_id": {
+          "name": "chain_id",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "contract_address": {
+          "name": "contract_address",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "last_block": {
+          "name": "last_block",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": "(unixepoch())"
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {
+        "indexer_cursor_chain_id_contract_address_pk": {
+          "columns": ["chain_id", "contract_address"],
+          "name": "indexer_cursor_chain_id_contract_address_pk"
+        }
+      },
+      "uniqueConstraints": {},
+      "checkConstraints": {
+        "indexer_cursor_addr": {
+          "name": "indexer_cursor_addr",
+          "value": "length(contract_address) = 42 AND substr(contract_address, 1, 2) = '0x' AND substr(contract_address, 3) NOT GLOB '*[^0-9a-f]*'"
+        },
+        "indexer_cursor_chain_id": {
+          "name": "indexer_cursor_chain_id",
+          "value": "\"indexer_cursor\".\"chain_id\" > 0"
+        },
+        "indexer_cursor_block": {
+          "name": "indexer_cursor_block",
+          "value": "\"indexer_cursor\".\"last_block\" >= 0"
+        }
+      }
+    },
+    "questions": {
+      "name": "questions",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "text",
+          "primaryKey": true,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "chain_id": {
+          "name": "chain_id",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "onchain_id": {
+          "name": "onchain_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "asker_wallet": {
+          "name": "asker_wallet",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "answerer_wallet": {
+          "name": "answerer_wallet",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "amount_usdc": {
+          "name": "amount_usdc",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "body": {
+          "name": "body",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "status": {
+          "name": "status",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": "'pending_payment'"
+        },
+        "answer_deadline": {
+          "name": "answer_deadline",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "is_public": {
+          "name": "is_public",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": false
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": "(unixepoch())"
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": "(unixepoch())"
+        }
+      },
+      "indexes": {
+        "questions_chain_onchain_unique": {
+          "name": "questions_chain_onchain_unique",
+          "columns": ["chain_id", "onchain_id"],
+          "isUnique": true
+        },
+        "questions_answerer_idx": {
+          "name": "questions_answerer_idx",
+          "columns": ["answerer_wallet"],
+          "isUnique": false
+        },
+        "questions_asker_idx": {
+          "name": "questions_asker_idx",
+          "columns": ["asker_wallet"],
+          "isUnique": false
+        }
+      },
+      "foreignKeys": {
+        "questions_answerer_wallet_creators_wallet_fk": {
+          "name": "questions_answerer_wallet_creators_wallet_fk",
+          "tableFrom": "questions",
+          "columnsFrom": ["answerer_wallet"],
+          "tableTo": "creators",
+          "columnsTo": ["wallet"],
+          "onUpdate": "cascade",
+          "onDelete": "restrict"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "checkConstraints": {
+        "questions_asker_addr": {
+          "name": "questions_asker_addr",
+          "value": "length(asker_wallet) = 42 AND substr(asker_wallet, 1, 2) = '0x' AND substr(asker_wallet, 3) NOT GLOB '*[^0-9a-f]*'"
+        },
+        "questions_answerer_addr": {
+          "name": "questions_answerer_addr",
+          "value": "length(answerer_wallet) = 42 AND substr(answerer_wallet, 1, 2) = '0x' AND substr(answerer_wallet, 3) NOT GLOB '*[^0-9a-f]*'"
+        },
+        "questions_chain_id": {
+          "name": "questions_chain_id",
+          "value": "\"questions\".\"chain_id\" > 0"
+        },
+        "questions_onchain_id": {
+          "name": "questions_onchain_id",
+          "value": "\"questions\".\"onchain_id\" IS NULL OR length(onchain_id) BETWEEN 1 AND 39 AND onchain_id NOT GLOB '*[^0-9]*'"
+        },
+        "questions_amount": {
+          "name": "questions_amount",
+          "value": "\"questions\".\"amount_usdc\" IS NULL OR length(amount_usdc) BETWEEN 1 AND 39 AND amount_usdc NOT GLOB '*[^0-9]*'"
+        },
+        "questions_body_len": {
+          "name": "questions_body_len",
+          "value": "length(\"questions\".\"body\") BETWEEN 1 AND 2000"
+        },
+        "questions_status": {
+          "name": "questions_status",
+          "value": "status IN ('pending_payment', 'open', 'answered', 'declined', 'cancelled', 'reclaimed')"
+        }
+      }
+    }
+  },
+  "views": {},
+  "enums": {},
+  "_meta": {
+    "columns": {},
+    "schemas": {},
+    "tables": {}
+  },
+  "internal": {
+    "indexes": {}
+  }
+}

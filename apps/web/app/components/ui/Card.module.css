@@ -1,0 +1,19 @@
+.card {
+  position: relative;
+  background: var(--surface-raised);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-xl);
+  box-shadow: var(--shadow-sm);
+  padding: var(--space-6);
+}
+
+.flush {
+  padding: 0;
+}
+
+@media (max-width: 640px) {
+  .card {
+    padding: var(--space-5);
+    border-radius: var(--radius-lg);
+  }
+}

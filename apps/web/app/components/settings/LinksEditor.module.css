@@ -1,0 +1,59 @@
+.wrap {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+.empty {
+  color: var(--text-subtle);
+  font-size: var(--text-sm);
+}
+
+/* Mobile-first: label + url stack, with the remove control aligned to the top-right. */
+.row {
+  display: flex;
+  gap: var(--space-2);
+  align-items: flex-start;
+}
+
+.fields {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+.remove {
+  flex-shrink: 0;
+  width: 2.25rem;
+  height: 2.25rem;
+  margin-top: 0.15rem;
+  display: grid;
+  place-items: center;
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius-md);
+  background: var(--surface);
+  color: var(--text-muted);
+  cursor: pointer;
+  transition: color var(--transition-fast), border-color var(--transition-fast);
+}
+
+.remove:hover {
+  color: var(--danger);
+  border-color: var(--danger);
+}
+
+/* Align the remove button with the input row when the fields have a label above them. */
+.removeFirst {
+  margin-top: 1.9rem;
+}
+
+@media (min-width: 560px) {
+  .fields {
+    flex-direction: row;
+  }
+  .labelInput {
+    max-width: 12rem;
+  }
+}

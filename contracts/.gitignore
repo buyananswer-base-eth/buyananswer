@@ -1,0 +1,20 @@
+# Compiler files
+cache/
+out/
+
+# Commonly ignored directories
+.logs/
+.ignore/
+
+# Broadcast logs — never committed (ADR-0035). Foundry's default un-ignores `broadcast/`; we don't.
+# The canonical deploy record (deployed address + indexer start block) is hand-maintained in
+# packages/shared/src/contracts/deployments.ts, so these run JSONs are disposable local artifacts.
+broadcast/
+
+# Docs
+docs/
+
+# Dotenv file
+.env
+.env.*
+!.env.example

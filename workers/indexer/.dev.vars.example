@@ -1,0 +1,38 @@
+# Copy to `.dev.vars` (git-ignored) for local development. Never commit real values.
+# `.dev.vars` provides secrets/vars to `wrangler dev` locally.
+
+# RPC endpoint the indexer reads escrow logs from, picked by CHAIN_ID: 84532 → RPC_URL_BASE_SEPOLIA,
+# 8453 → RPC_URL_BASE. `RPC_URL` (below) is the chain-agnostic fallback for whichever chain is active.
+# If none is set, the indexer falls back to viem's default PUBLIC endpoint — rate-limited on getLogs
+# and read-after-write inconsistent (the Session-18 F1 defect, ADR-0037). PRODUCTION MUST set one
+# private provider here, the same one the web app and the deploy use (ADR-0038).
+RPC_URL_BASE_SEPOLIA=
+
+# Base MAINNET RPC endpoint (chain 8453). Required in production — see the note above.
+RPC_URL_BASE=
+
+# Chain-agnostic fallback, used when the chain-specific var above is unset.
+RPC_URL=
+
+# Bearer token gating the internal `POST /reconcile` endpoint. If unset, `/reconcile` is disabled
+# (503 not_configured) — the endpoint is fail-closed. Generate a random value; never commit it.
+RECONCILE_TOKEN=
+
+# Cloudflare account that owns the remote D1 (only needed for `--remote` ops, not `--local`).
+CLOUDFLARE_ACCOUNT_ID=
+
+# The remote D1 database id from `wrangler d1 create buyananswer-dev` — the SAME database the API uses.
+# Local dev / vitest ignore it; wrangler.jsonc's TOP-LEVEL (dev) binding is a placeholder;
+# its `env.production` block carries the real provisioned id (an identifier, not a credential).
+D1_DATABASE_ID=
+
+# Remote KV namespace id from `wrangler kv namespace create RATELIMIT` (Session 14 / ADR-0032:
+# rate-limit counters for `POST /reconcile`). `--local` / vitest ignore it; wrangler.jsonc has only a
+# placeholder id in the top-level (dev) binding; `env.production` carries the real provisioned id.
+KV_RATELIMIT_ID=
+
+# Optional overrides (otherwise taken from wrangler.jsonc `vars`):
+# CHAIN_ID=84532
+# CONFIRMATIONS=5
+# GETLOGS_RANGE=2000
+# MAX_BLOCKS_PER_RUN=100000

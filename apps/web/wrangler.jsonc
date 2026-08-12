@@ -1,0 +1,81 @@
+{
+  // Cloudflare Worker config for the BuyAnAnswer web app (ADR-0038) — the Cloudflare deploy adapter
+  // that had been deferred since Session 9. SSR stays ON (react-router.config.ts), so the public
+  // `/<handle>` boards and their per-handle OG tags keep working (ADR-0026 / ADR-0030).
+  //
+  // ⚠ ORDER MATTERS: `main` imports `build/server/index.js` and `assets.directory` is `build/client`,
+  //   both produced by `pnpm --filter @buyananswer/web build`. BUILD FIRST, then deploy.
+  //
+  // Static assets are matched BEFORE the Worker runs, so hashed bundles, /og.png, /robots.txt etc.
+  // are served straight from the edge and never spin up an isolate. Only unmatched paths hit SSR.
+  //
+  // NO secrets here. Nothing this app needs is secret: SSR_API_ORIGIN and SITE_ORIGIN are public
+  // origins, and the client's RPC/WalletConnect ids are baked into the client bundle at BUILD time
+  // from VITE_* env vars (see apps/web/.env.example), not read here at runtime.
+  "$schema": "../../workers/api/node_modules/wrangler/config-schema.json",
+  "name": "buyananswer-web",
+  "main": "server/worker.ts",
+  // >= 2025-04-01 is REQUIRED, not cosmetic: it is the compat date at which workerd populates
+  // `process.env` from vars/secrets, which is how app/lib/board.server.ts reads its config.
+  "compatibility_date": "2025-04-01",
+  "compatibility_flags": ["nodejs_compat"],
+  "assets": {
+    "directory": "./build/client",
+    "binding": "ASSETS",
+    // SSR owns every unmatched path — do NOT serve a static 404 or an SPA fallback here, or the
+    // server-rendered boards stop rendering.
+    "not_found_handling": "none"
+  },
+  "vars": {
+    // Dev defaults. Production values live in the `production` environment below.
+    "SSR_API_ORIGIN": "http://127.0.0.1:8787",
+    "SITE_ORIGIN": ""
+  },
+
+  // ───────────────────────────────────────────────────────────────────────────────────────────
+  // PRODUCTION — `wrangler deploy --env production` from apps/web, AFTER `pnpm build`.
+  // ⚠ Named environments do NOT inherit `vars`/`assets`/`main` config — redeclared in full.
+  // ───────────────────────────────────────────────────────────────────────────────────────────
+  "env": {
+    "production": {
+      "name": "buyananswer-web-production",
+      // Custom domains. `custom_domain: true` makes wrangler create the Cloudflare-managed DNS
+      // record + certificate on deploy — no dashboard step. Requires the zone to already exist in
+      // the account. Both hostnames serve the SAME Worker: `buyananswer.com` is the landing +
+      // public boards, `app.buyananswer.com` is the app entry (ADR-0029), and the router
+      // distinguishes them. The frame's APP_ORIGIN already points at app.buyananswer.com.
+      // All three hostnames serve the SAME Worker; the router distinguishes them.
+      // `buyananswer.com` = landing + public boards, `app.` = the app entry (ADR-0029),
+      // `www.` so the habitual spelling resolves instead of erroring.
+      //
+      // ⚠ A custom domain cannot be attached over pre-existing A/CNAME records — Cloudflare
+      // rejects it with code 100117 and that fails the ENTIRE deploy, not just the attachment.
+      // The apex and www records from the previous host were deleted on 2026-08-12 to allow this.
+      // The zone's MX + SPF TXT records are untouched and must stay: they carry email forwarding.
+      "routes": [
+        { "pattern": "buyananswer.com", "custom_domain": true },
+        { "pattern": "www.buyananswer.com", "custom_domain": true },
+        { "pattern": "app.buyananswer.com", "custom_domain": true }
+      ],
+      "assets": {
+        "directory": "./build/client",
+        "binding": "ASSETS",
+        "not_found_handling": "none"
+      },
+      // Service binding backing the same-origin `/api/*` + `/avatars/*` proxy in server/worker.ts.
+      // Worker-to-Worker, so it never leaves Cloudflare and needs no DNS. Without this the browser
+      // would have to call api.buyananswer.com cross-site, and the SameSite=Lax session cookie
+      // would never be sent (ADR-0022) — sessions would silently fail to persist.
+      "services": [{ "binding": "API", "service": "buyananswer-api-production" }],
+      "vars": {
+        // The API Worker's custom domain (created by its own `routes` entry). Server-side only —
+        // the browser talks to the API same-origin via /api/*, never this host directly.
+        "SSR_API_ORIGIN": "https://api.buyananswer.com",
+        // Canonical origin for OG/canonical URLs — pinned in production (ADR-0011). This is
+        // intentionally the FINAL domain, not the workers.dev host: canonical/OG URLs must not
+        // advertise a temporary hostname to crawlers and social unfurlers.
+        "SITE_ORIGIN": "https://buyananswer.com"
+      }
+    }
+  }
+}

@@ -1,0 +1,32 @@
+# Copy to `.dev.vars` (git-ignored) for local development. Never commit real values.
+# `.dev.vars` provides secrets/vars to `wrangler dev` locally.
+
+# Cloudflare account that owns the remote D1 (only needed for `--remote` ops, not `--local`).
+CLOUDFLARE_ACCOUNT_ID=
+
+# The remote D1 database id from `wrangler d1 create buyananswer-dev`. Local dev does not need it;
+# for remote migrations, pass it to wrangler or wire it into an environment-scoped wrangler config
+# kept out of git. wrangler.jsonc's top-level (dev) binding is a placeholder; `env.production`
+# carries the real provisioned id (an identifier, not a credential).
+D1_DATABASE_ID=
+
+# Remote KV namespace id from `wrangler kv namespace create SESSIONS` (SIWE nonces + sessions).
+# `--local` / vitest ignore it; wrangler.jsonc's top-level (dev) binding is a
+# placeholder; `env.production` carries the real provisioned id.
+KV_SESSIONS_ID=
+
+# Remote KV namespace id from `wrangler kv namespace create RATELIMIT` (Session 14 / ADR-0032:
+# rate-limit counters + idempotency records). `--local` / vitest ignore it; wrangler.jsonc has only a
+# placeholder id in the top-level (dev) binding; `env.production` carries the real provisioned id.
+KV_RATELIMIT_ID=
+
+# The R2 bucket is created out of band with `wrangler r2 bucket create buyananswer-avatars`.
+# The bucket NAME lives in wrangler.jsonc (not a secret); account tokens stay in the environment.
+
+# Optional auth tuning (seconds). Defaults: nonce 600 (10m), session 604800 (7d). KV floor is 60s.
+# NONCE_TTL_SECONDS=
+# SESSION_TTL_SECONDS=
+
+# Public base URL for serving avatars (e.g. an R2 public bucket / CDN domain). Empty ⇒ the Worker
+# serves them itself at /avatars/:wallet/:file. Set in wrangler.jsonc `vars` for prod.
+# AVATAR_PUBLIC_BASE_URL=

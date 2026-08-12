@@ -1,0 +1,36 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630">
+  <defs>
+    <radialGradient id="glowA" cx="16%" cy="6%" r="62%">
+      <stop offset="0%" stop-color="#ccf94b" stop-opacity="0.30"/>
+      <stop offset="60%" stop-color="#ccf94b" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="glowB" cx="96%" cy="82%" r="58%">
+      <stop offset="0%" stop-color="#ff6b47" stop-opacity="0.18"/>
+      <stop offset="62%" stop-color="#ff6b47" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+
+  <rect width="1200" height="630" fill="#0e0d0a"/>
+  <rect width="1200" height="630" fill="url(#glowA)"/>
+  <rect width="1200" height="630" fill="url(#glowB)"/>
+
+  <!-- wordmark -->
+  <g transform="translate(80,72)">
+    <rect x="0" y="0" width="34" height="34" rx="9" fill="#ccf94b" transform="rotate(-8 17 17)"/>
+    <text x="50" y="26" font-family="Arial, Helvetica, sans-serif" font-weight="700" font-size="30" fill="#f6f2e6">BuyAnAnswer</text>
+  </g>
+
+  <!-- headline -->
+  <g font-family="Arial, Helvetica, sans-serif" font-weight="800" fill="#f6f2e6">
+    <text x="80" y="250" font-size="72">Ask me anything.</text>
+    <text x="80" y="336" font-size="72">Every tip buys</text>
+    <rect x="72" y="366" width="596" height="68" rx="7" fill="#ccf94b"/>
+    <text x="84" y="422" font-size="72" fill="#16170b">a real answer.</text>
+  </g>
+
+  <!-- sub tagline -->
+  <text x="82" y="512" font-family="Arial, Helvetica, sans-serif" font-weight="500" font-size="27" fill="#c9c2b0">Pay in USDC on Base. Your money is held onchain until you get an answer.</text>
+
+  <!-- trust line -->
+  <text x="82" y="566" font-family="Arial, Helvetica, sans-serif" font-weight="600" font-size="22" fill="#8f8672">You only pay for answers   ·   Refunded if they don't</text>
+</svg>

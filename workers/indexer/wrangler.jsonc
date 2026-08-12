@@ -1,0 +1,99 @@
+{
+  // Cloudflare Worker config for the BuyAnAnswer event indexer — the sole writer of money-state.
+  // It reads Base Sepolia escrow events (viem) and reconciles them into D1 idempotently. NO secrets
+  // or account-scoped ids live here: `account_id`, API tokens, the RPC URL, and the reconcile token
+  // come from the environment (`.dev.vars`, CI secrets), never git.
+  //
+  // The D1 binding points at the SAME database as the API (`buyananswer-dev`) and the SAME shared
+  // migrations. `database_id` is a non-secret placeholder — `--local` / vitest-pool-workers key the
+  // local SQLite by binding + database_name and ignore it. Set the real remote id per-environment out
+  // of band (see .dev.vars.example). (ADR-0021, ADR-0024)
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "buyananswer-indexer",
+  "main": "src/index.ts",
+  "compatibility_date": "2025-02-04",
+  "compatibility_flags": ["nodejs_compat"],
+  // Reconcile on a schedule. Every 2 minutes keeps testnet latency low without hammering the RPC;
+  // tune per environment. Each tick advances the per-chain cursor toward the confirmed head and is
+  // idempotent, so overlapping/duplicate ticks never double-write (ADR-0024).
+  "triggers": {
+    "crons": ["*/2 * * * *"]
+  },
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "buyananswer-dev",
+      "database_id": "00000000-0000-0000-0000-000000000000",
+      // Shared migrations (generated from packages/shared/src/db/schema.ts). The `indexer_cursor`
+      // row for Base Sepolia is seeded here at the deploy block (migration 0001).
+      "migrations_dir": "../../packages/shared/migrations"
+    }
+  ],
+  // Abuse controls (Session 14, ADR-0032): fixed-window rate-limit counters for `POST /reconcile`
+  // (in front of the bearer, to blunt token brute-forcing). Placeholder id — Miniflare keys the local
+  // namespace by binding name; create the real one with `wrangler kv namespace create RATELIMIT`.
+  "kv_namespaces": [
+    {
+      "binding": "RATELIMIT",
+      "id": "00000000000000000000000000000001",
+      "preview_id": "00000000000000000000000000000001"
+    }
+  ],
+  "vars": {
+    // Chain to index (dev: Base Sepolia). The escrow address + backfill start block are read from
+    // @buyananswer/shared `escrowDeployments[CHAIN_ID]`, not duplicated here.
+    "CHAIN_ID": "84532",
+    // Reorg safety: never finalize within this many blocks of the chain head (ADR-0024).
+    "CONFIRMATIONS": "5",
+    // Max `eth_getLogs` block span per RPC call (public RPCs cap the range).
+    "GETLOGS_RANGE": "2000",
+    // Cap blocks scanned per invocation so backfill catches up across cron ticks within Worker limits.
+    "MAX_BLOCKS_PER_RUN": "100000"
+    // RPC_URL_BASE_SEPOLIA and RECONCILE_TOKEN are secrets — provide via `.dev.vars` / CI, never git.
+  },
+
+  // ───────────────────────────────────────────────────────────────────────────────────────────
+  // PRODUCTION (Base mainnet, chain 8453) — `wrangler deploy --env production` (ADR-0038).
+  //
+  // ⚠ Named environments do NOT inherit `vars`, bindings, or `triggers` — all redeclared below.
+  //
+  // ⚠ ORDERING: the indexer refuses to start until `escrowDeployments[8453]` in
+  //   packages/shared/src/contracts/deployments.ts has a non-null address AND startBlock
+  //   (`resolveConfig` throws "no escrow deployment for chain 8453"). Deploy the contract and
+  //   record it FIRST: deploy the contract, then this Worker. That throw is the intended guard, not a bug.
+  //
+  // ⚠ The backfill start cursor comes from that same `startBlock`, so it must be the block the
+  //   deploy tx actually landed in — not an approximation.
+  //
+  // SECRETS (names only; set with `wrangler secret put --env production <NAME>`):
+  //   RPC_URL_BASE     — the private Base-mainnet RPC. REQUIRED: without it the indexer silently
+  //                      falls back to viem's public endpoint (ADR-0037 F1 hazard).
+  //   RECONCILE_TOKEN  — bearer gating POST /reconcile; unset ⇒ endpoint disabled (fail-closed).
+  // ───────────────────────────────────────────────────────────────────────────────────────────
+  "env": {
+    "production": {
+      "name": "buyananswer-indexer-production",
+      "triggers": {
+        "crons": ["*/2 * * * *"]
+      },
+      "d1_databases": [
+        {
+          "binding": "DB",
+          "database_name": "buyananswer-production",
+          "database_id": "a5778629-984e-4a9f-8483-77b9edd852e2",
+          "migrations_dir": "../../packages/shared/migrations"
+        }
+      ],
+      "kv_namespaces": [{ "binding": "RATELIMIT", "id": "97269f7354e442f495f0284dfa9cb054" }],
+      "vars": {
+        // Base mainnet.
+        "CHAIN_ID": "8453",
+        // Reorg safety, unchanged from testnet (ADR-0024).
+        "CONFIRMATIONS": "5",
+        // Base mainnet is high-traffic; a private provider handles this span comfortably.
+        "GETLOGS_RANGE": "2000",
+        "MAX_BLOCKS_PER_RUN": "100000"
+      }
+    }
+  }
+}

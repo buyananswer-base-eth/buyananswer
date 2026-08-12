@@ -1,0 +1,23 @@
+{
+  "name": "@buyananswer/e2e",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "description": "End-to-end + on-chain journeys (Playwright). Nightly / gated; kept out of the base install path (ADR-0034).",
+  "scripts": {
+    "test": "playwright test",
+    "test:onchain": "E2E_ONCHAIN=1 playwright test",
+    "wallets": "node scripts/wallets.mjs",
+    "test:harness": "E2E_HARNESS=1 playwright test harness.spec.ts",
+    "test:reclaim": "E2E_HARNESS=1 playwright test reclaim-mature.spec.ts",
+    "typecheck": "tsc --noEmit",
+    "report": "playwright show-report",
+    "browser": "playwright install chromium"
+  },
+  "devDependencies": {
+    "@playwright/test": "1.61.0",
+    "@types/node": "^20.19.0",
+    "typescript": "^5.7.3",
+    "viem": "^2.21.0"
+  }
+}

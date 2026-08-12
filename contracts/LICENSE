@@ -1,0 +1,7 @@
+The BuyAnAnswer smart contracts in this directory (contracts/**) are licensed
+under the Business Source License 1.1 (BUSL-1.1).
+
+See the repository-root LICENSE-BSL for the full license text and parameters.
+Each Solidity source file additionally carries an `SPDX-License-Identifier: BUSL-1.1` header.
+
+SPDX-License-Identifier: BUSL-1.1

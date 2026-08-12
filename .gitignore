@@ -1,0 +1,79 @@
+# ─────────────────────────────────────────────────────────────
+# SECRETS — never commit. Broad patterns first so nothing slips.
+# ─────────────────────────────────────────────────────────────
+*secret*
+*(secret)*
+*.secret
+*.seed
+*mnemonic*
+*private-key*
+*privatekey*
+*.key
+*.pem
+.env
+.env.*
+!.env.example
+.dev.vars
+.dev.vars.*
+!.dev.vars.example
+secrets/
+.secrets/
+# Exact known dev-wallet seed file (belt and suspenders)
+buyananswer.base.eth(secret).txt
+# Project testnet deployer keystore + its password (encrypted key never committed — ADR-0020)
+contracts/.deployer/
+
+# ─────────────────────────────────────────────────────────────
+# Dependencies / package managers
+# ─────────────────────────────────────────────────────────────
+node_modules/
+**/node_modules/
+.pnpm-store/
+
+# ─────────────────────────────────────────────────────────────
+# Build output
+# ─────────────────────────────────────────────────────────────
+dist/
+build/
+out/
+.next/
+.turbo/
+*.tsbuildinfo
+# React Router v7 generated types + build context (apps/web)
+.react-router/
+
+# ─────────────────────────────────────────────────────────────
+# Cloudflare / Wrangler
+# ─────────────────────────────────────────────────────────────
+.wrangler/
+.mf/
+wrangler.toml.bak
+
+# ─────────────────────────────────────────────────────────────
+# Foundry (smart contracts)
+# ─────────────────────────────────────────────────────────────
+contracts/out/
+contracts/cache/
+contracts/broadcast/**/dry-run/
+# keep broadcast run artifacts? ignore by default; opt-in per deploy
+contracts/broadcast/
+
+# ─────────────────────────────────────────────────────────────
+# Logs / coverage / caches
+# ─────────────────────────────────────────────────────────────
+*.log
+npm-debug.log*
+pnpm-debug.log*
+coverage/
+.vitest/
+.cache/
+
+# ─────────────────────────────────────────────────────────────
+# OS / editor
+# ─────────────────────────────────────────────────────────────
+.DS_Store
+**/.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+*.swp

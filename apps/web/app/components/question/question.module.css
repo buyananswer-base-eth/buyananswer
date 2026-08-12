@@ -1,0 +1,146 @@
+/* SPDX-License-Identifier: MIT */
+/* Question detail + settle panels. Mobile-first: a single centred column that reads well at ~390px. */
+
+.detailHead {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+  flex-wrap: wrap;
+}
+
+.amount {
+  font-size: var(--text-xl);
+  font-weight: 680;
+  letter-spacing: -0.01em;
+  font-variant-numeric: tabular-nums;
+}
+
+/* The question / answer prose blocks. */
+.body {
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  line-height: 1.5;
+}
+
+.answerBody {
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  line-height: 1.5;
+  padding: var(--space-4);
+  background: var(--surface-2);
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border);
+}
+
+/* Key/value metadata (from, deadline, asked-on). */
+.meta {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.metaRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: var(--space-3);
+  font-size: var(--text-sm);
+}
+
+.metaKey {
+  color: var(--text-muted);
+}
+
+.metaValue {
+  font-variant-numeric: tabular-nums;
+  text-align: right;
+  overflow-wrap: anywhere;
+}
+
+.mono {
+  font-family: var(--font-mono);
+}
+
+/* A live/terminal status row for the settle steps (confirming/pending/indexing/error). */
+.status {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  padding: var(--space-3) var(--space-4);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  background: var(--surface-2);
+  font-size: var(--text-sm);
+}
+
+.statusText {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.statusHint {
+  color: var(--text-subtle);
+  font-size: var(--text-xs);
+}
+
+.tone-danger {
+  border-color: color-mix(in srgb, var(--danger) 40%, var(--border));
+  background: var(--danger-subtle);
+}
+
+.tone-warning {
+  border-color: color-mix(in srgb, var(--warning) 40%, var(--border));
+  background: var(--warning-subtle);
+}
+
+.tone-success {
+  border-color: color-mix(in srgb, var(--success) 40%, var(--border));
+  background: var(--success-subtle);
+}
+
+.txLink {
+  color: var(--accent);
+  font-size: var(--text-sm);
+  word-break: break-all;
+}
+
+.actions {
+  display: flex;
+  gap: var(--space-3);
+  flex-wrap: wrap;
+}
+
+/* An inline "are you sure?" confirmation row for an irreversible action. */
+.confirm {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  padding: var(--space-3) var(--space-4);
+  border: 1px solid color-mix(in srgb, var(--warning) 40%, var(--border));
+  background: var(--warning-subtle);
+  border-radius: var(--radius-md);
+}
+
+.confirmText {
+  font-size: var(--text-sm);
+}
+
+/* A note explaining the money outcome of an action (fee, refund). */
+.note {
+  font-size: var(--text-sm);
+  color: var(--text-muted);
+}
+
+/* Compact inline wallet prompt (connect / switch / wrong account) shown next to an action. */
+.walletPrompt {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  padding: var(--space-3) var(--space-4);
+  border: 1px dashed var(--border);
+  border-radius: var(--radius-md);
+  font-size: var(--text-sm);
+}

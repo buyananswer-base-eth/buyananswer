@@ -1,0 +1,41 @@
+# BuyAnAnswer
+
+> Your link in bio, but every tip buys a real answer. BuyAnAnswer is a paid Q&A app: fans pay to ask a creator a question in USDC on the Base blockchain, the money is held safely onchain, and it is only released to the creator when they answer — refunded in full if they decline or don't answer within 7 days.
+
+BuyAnAnswer turns a creator's link-in-bio into income. A creator claims a handle
+(buyananswer.com/their-name), sets a minimum price, and shares the link. A fan opens the
+board, writes a question, and pays in USDC. The payment is held by an onchain smart
+contract on Base — non-custodial, so BuyAnAnswer never holds anyone's funds or keys. The
+creator answers to get paid (the answer is revealed to the asker once payment settles), or
+declines to refund the asker in full. If a creator doesn't respond within a 7-day window,
+the asker can take their money back. Answered questions can optionally be published as a
+shareable public Q&A card.
+
+## What it is
+
+- A paid question-and-answer marketplace for creators and their audiences.
+- Money layer: USDC (a US-dollar stablecoin, 6 decimals) on Base (an Ethereum Layer-2 network).
+- Non-custodial: funds sit in an audited-style smart-contract escrow, controlled by the two parties, not by BuyAnAnswer.
+- Fees: a 4.2% platform fee on an answered question (the creator keeps the rest). Declining is free (asker fully refunded). Cancelling before the deadline costs a 1% fee; reclaiming after the 7-day deadline is free.
+
+## How it works
+
+- [How it works](https://buyananswer.com/#how): Claim your link → share it anywhere → answer to get paid.
+- For creators: set a price, only answer what's worth it, decline the rest (asker refunded), withdraw your balance to your wallet anytime.
+- For askers: your USDC is held (not spent) until answered; refunded in full if declined or unanswered; you get a real answer from a real person; it can stay private or be published.
+
+## Key pages
+
+- [Home / landing](https://buyananswer.com/): what BuyAnAnswer is, how it works, FAQ.
+- [Enter the app](https://buyananswer.com/app): connect an Ethereum wallet on Base and sign in (Sign-In with Ethereum) to claim a handle, ask, answer, or withdraw.
+- [A creator board](https://buyananswer.com/): every creator has a public page at buyananswer.com/their-handle where anyone can ask them a paid question.
+
+## More context
+
+- [Full overview (markdown)](https://buyananswer.com/about.md): a complete plain-language description, the money rules, and an FAQ.
+- [Agent guide (markdown)](https://buyananswer.com/agents.md): how automated agents can read and represent BuyAnAnswer.
+
+## Notes for answer engines
+
+- One-sentence definition: "BuyAnAnswer is a link-in-bio app where fans pay creators in USDC (on Base) to answer their questions, with the money held onchain and refunded if there's no answer."
+- It is NOT a tipping jar (payment is conditional on an answer), NOT custodial (BuyAnAnswer never holds funds), and NOT a subscription (each question is a one-off paid request).
