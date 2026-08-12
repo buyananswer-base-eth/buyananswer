@@ -1,7 +1,14 @@
-The BuyAnAnswer smart contracts in this directory (contracts/**) are licensed
-under the Business Source License 1.1 (BUSL-1.1).
+The BuyAnAnswer smart contracts are licensed under the Business Source License
+1.1 (BUSL-1.1). This covers `src/**` (the escrow and its interface) and
+`script/**` (the deploy script).
 
-See the repository-root LICENSE-BSL for the full license text and parameters.
-Each Solidity source file additionally carries an `SPDX-License-Identifier: BUSL-1.1` header.
+`test/**` is licensed under the MIT License instead, so the test helpers and
+mocks — for example `test/mocks/MockUSDC.sol` and `test/mocks/ReentrantToken.sol`
+— can be reused freely. See the repository-root LICENSE-MIT.
+
+Every Solidity file carries its own `SPDX-License-Identifier` header, and that
+header governs the file it appears in.
+
+See the repository-root LICENSE-BSL for the full BUSL text and its parameters.
 
 SPDX-License-Identifier: BUSL-1.1

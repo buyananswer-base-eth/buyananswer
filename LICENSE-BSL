@@ -1,22 +1,23 @@
 Business Source License 1.1
 
-Applies to: contracts/** (the BuyAnAnswer escrow smart contracts).
-The apps/** and packages/** directories are licensed separately under LICENSE-MIT.
+Applies to: contracts/src/** and contracts/script/** (the BuyAnAnswer escrow
+smart contracts and their deploy script).
+
+Everything else is licensed separately under LICENSE-MIT: apps/**, packages/**,
+workers/**, and contracts/test/**. Each source file's own
+SPDX-License-Identifier header governs that file.
 
 -----------------------------------------------------------------------------
-PARAMETERS  (⚠ DRAFT — confirm all values with counsel before repo2 / public release)
+PARAMETERS
 
-Licensor:            [BuyAnAnswer — legal entity TBD]
+Licensor:            Jayanth Komarraju
 Licensed Work:       BuyAnAnswer Escrow smart contracts. The Licensed Work is
-                     (c) 2026 [Licensor].
+                     (c) 2026 Jayanth Komarraju.
 Additional Use Grant: You may make production use of the Licensed Work,
                      provided such use does not constitute a "Competing Use." A
                      "Competing Use" means use in or for a product or service
                      that competes with the Licensor's BuyAnAnswer product.
-                     [Confirm exact wording with counsel.]
-Change Date:         The earlier of (a) four years from the date the Licensed
-                     Work is first publicly distributed, or (b) a date the
-                     Licensor designates. [Set concrete date at release.]
+Change Date:         2030-08-12
 Change License:      GNU General Public License v2.0 or later
 -----------------------------------------------------------------------------
 

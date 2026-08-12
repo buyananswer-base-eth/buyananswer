@@ -82,9 +82,12 @@ A few invariants hold across the codebase. Breaking one is a design change, not 
 
 ## Licensing
 
-By contributing you agree your contributions are licensed under the license governing the directory
-you changed: **BUSL-1.1** for `contracts/`, **MIT** for `apps/`, `packages/`, and `workers/`. Keep the
-`SPDX-License-Identifier` header on every new source file.
+By contributing you agree your contributions are licensed under the license governing the file you
+changed: **BUSL-1.1** for `contracts/src/` and `contracts/script/`, **MIT** for everything else —
+`apps/`, `packages/`, `workers/`, and `contracts/test/`.
+
+Keep the `SPDX-License-Identifier` header on every new source file, and match the directory you're
+adding to. A new contract test is `MIT`; a change to the escrow itself is `BUSL-1.1`.
 
 ## Code of conduct
 

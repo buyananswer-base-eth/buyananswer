@@ -1,9 +1,10 @@
 MIT License
 
-Copyright (c) 2026 [BuyAnAnswer — legal entity TBD before repo2 release]
+Copyright (c) 2026 Jayanth Komarraju
 
-Applies to: apps/** and packages/** (the web app and SDKs). The contracts/**
-directory is licensed separately under LICENSE-BSL.
+Applies to: apps/**, packages/**, and workers/** (the web app, the Cloudflare
+Workers, and the SDKs). The contracts/** directory is licensed separately under
+LICENSE-BSL.
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal

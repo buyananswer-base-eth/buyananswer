@@ -177,8 +177,15 @@ This repository is **dual-licensed by directory**:
 
 | Path | License |
 |---|---|
-| `contracts/` | **BUSL-1.1** — see [`LICENSE-BSL`](./LICENSE-BSL) and [`contracts/LICENSE`](./contracts/LICENSE) |
-| `apps/`, `packages/`, `workers/` | **MIT** — see [`LICENSE-MIT`](./LICENSE-MIT) |
+| `contracts/src/`, `contracts/script/` | **BUSL-1.1** — see [`LICENSE-BSL`](./LICENSE-BSL) and [`contracts/LICENSE`](./contracts/LICENSE) |
+| `apps/`, `packages/`, `workers/`, `contracts/test/` | **MIT** — see [`LICENSE-MIT`](./LICENSE-MIT) |
 
-Every source file carries an `SPDX-License-Identifier` header stating which applies. When the two
-disagree, the per-directory `LICENSE` file governs.
+Copyright (c) 2026 Jayanth Komarraju. The BUSL **Change Date is 2030-08-12**, on which the escrow
+contracts convert to GPL-2.0-or-later. Until then you may use them in production provided the use
+does not compete with BuyAnAnswer; non-production use is unrestricted.
+
+The contract **tests and mocks are MIT on purpose** — `MockUSDC` and `ReentrantToken` are useful
+outside this project and shouldn't carry a competing-use restriction.
+
+Every source file carries its own `SPDX-License-Identifier` header, and that header governs the file
+it appears in.
