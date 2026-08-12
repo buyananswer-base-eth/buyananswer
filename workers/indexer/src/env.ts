@@ -31,6 +31,11 @@ export interface Env {
   RPC_URL_BASE?: string;
   /** Chain-agnostic RPC URL (secret). Used when the chain-specific var above is unset. */
   RPC_URL?: string;
+  /**
+   * Age (hours) after which an abandoned `pending_payment` draft is pruned by the hourly sweep
+   * (ADR-0032). Generous by default so a slow payer is never pruned mid-flow.
+   */
+  ORPHAN_TTL_HOURS?: string;
   /** Bearer token gating `POST /reconcile` (secret). Unset ⇒ the endpoint is disabled (fail-closed). */
   RECONCILE_TOKEN?: string;
 }
@@ -81,6 +86,14 @@ function intFromEnv(value: string | undefined, fallback: number, min = 0): numbe
  * mainnet (8453) indexer silently ran on the public endpoint no matter what was configured.
  * Production must set the chain's secret to one consistent private provider (ADR-0038).
  */
+/** Default age (hours) before an abandoned pending_payment draft is pruned by the sweep. */
+export const DEFAULT_ORPHAN_TTL_HOURS = 24;
+
+/** Orphan-draft cutoff in SECONDS, from {@link Env.ORPHAN_TTL_HOURS} (ADR-0032). */
+export function orphanTtlSeconds(env: Env): number {
+  return intFromEnv(env.ORPHAN_TTL_HOURS, DEFAULT_ORPHAN_TTL_HOURS, 1) * 3600;
+}
+
 export function resolveRpcUrl(env: Env, chainId: number): string | undefined {
   const perChain = chainId === BASE_CHAIN_ID ? env.RPC_URL_BASE : env.RPC_URL_BASE_SEPOLIA;
   return perChain?.trim() || env.RPC_URL?.trim() || undefined;

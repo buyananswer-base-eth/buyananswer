@@ -81,15 +81,14 @@ contracts/          Solidity escrow (Foundry, BUSL-1.1) — the only place money
 apps/web/           React Router SSR app: link-in-bio board, ask+pay, creator inbox
 workers/api/        Cloudflare Worker — SIWE auth, profiles, question/answer content
 workers/indexer/    Cloudflare Worker — chain events → D1. Sole writer of payment state
-workers/frame/      Cloudflare Worker — Farcaster frame: ask + pay in-feed
 packages/shared/    DB schema, migrations, deployment records, on/off-chain ref codec
 packages/sdk/       Typed contract helpers (viem) — approve, ask, settle, withdraw
 packages/worker-kit/ Shared Worker plumbing: errors, logging, rate limits, idempotency
 ```
 
 The important boundary: **the indexer is the only component that writes payment state off-chain**,
-and it does so by reflecting events the chain has already finalized. The API and the frame never
-write money state. The chain is authoritative; the database is a mirror.
+and it does so by reflecting events the chain has already finalized. Nothing else writes money
+state. The chain is authoritative; the database is a mirror.
 
 ---
 
@@ -133,7 +132,6 @@ for local development:
 cp apps/web/.env.example apps/web/.env
 cp workers/api/.dev.vars.example workers/api/.dev.vars
 cp workers/indexer/.dev.vars.example workers/indexer/.dev.vars
-cp workers/frame/.dev.vars.example workers/frame/.dev.vars
 ```
 
 Then start the pieces you need:

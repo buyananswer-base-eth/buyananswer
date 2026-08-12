@@ -18,6 +18,12 @@ export default [
   // button → `/app` (`app.buyananswer.com` in production). Sibling of the wallet boundary, like the board.
   index("routes/landing.tsx"),
 
+  // Farcaster Mini App manifest (ADR-0042). A loader-only resource route, so it is explicit and
+  // testable rather than depending on a dot-directory surviving the asset pipeline. Declared before
+  // the dynamic `:handle` board — a literal path wins, but keeping it adjacent to `/` makes the
+  // precedence obvious to a reader.
+  route(".well-known/farcaster.json", "routes/farcaster-manifest.ts"),
+
   layout("routes/app-layout.tsx", [
     // The app entry: connect → SIWE → session. Lives at `/app` so `/` can be the landing. `app` is a
     // reserved handle on both sides, so `/app` never collides with the one-segment `:handle` board.

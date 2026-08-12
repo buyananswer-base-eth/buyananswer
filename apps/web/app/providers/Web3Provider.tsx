@@ -7,6 +7,7 @@
 
 import { type ReactNode, useEffect, useState } from "react";
 import { AppSkeleton } from "../components/AppSkeleton";
+import { useMiniAppReady } from "../hooks/useMiniApp";
 
 type Runtime = {
   WagmiProvider: typeof import("wagmi")["WagmiProvider"];
@@ -45,7 +46,22 @@ export function Web3Provider({ children }: { children: ReactNode }) {
   const { WagmiProvider, QueryClientProvider, config, queryClient } = runtime;
   return (
     <WagmiProvider config={config}>
-      <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
+      <QueryClientProvider client={queryClient}>
+        <MiniAppReady />
+        {children}
+      </QueryClientProvider>
     </WagmiProvider>
   );
+}
+
+/**
+ * Dismisses the Farcaster splash screen (ADR-0042). Renders nothing.
+ *
+ * Deliberately mounted INSIDE the runtime branch, i.e. only once the real tree has replaced
+ * `<AppSkeleton/>`. Calling `ready()` while the skeleton is still up would hand the user a visibly
+ * empty app. It no-ops outside a Farcaster client, so this is inert on the open web.
+ */
+function MiniAppReady() {
+  useMiniAppReady();
+  return null;
 }

@@ -10,6 +10,7 @@
 
 import { FAQS, LandingPage } from "../components/landing/LandingPage";
 import { siteOrigin } from "../lib/board.server";
+import { buildMiniAppEmbed, miniAppMetaTags } from "../lib/miniapp";
 import type { Route } from "./+types/landing";
 
 const TITLE = "BuyAnAnswer — get paid for your answers";
@@ -22,6 +23,13 @@ export function loader({ request }: Route.LoaderArgs) {
     origin,
     canonicalUrl: `${origin}/`,
     ogImageUrl: `${origin}/og.png`,
+    // Farcaster Mini App embed (ADR-0042) — casting the bare domain should open the app, not just
+    // render a picture. Launches at /app so the visitor lands on connect/sign-in.
+    miniAppEmbed: buildMiniAppEmbed({
+      origin,
+      launchPath: "/app",
+      buttonTitle: "Open BuyAnAnswer",
+    }),
   };
 }
 
@@ -80,6 +88,7 @@ export function meta({ data }: Route.MetaArgs) {
     { name: "twitter:title", content: TITLE },
     { name: "twitter:description", content: DESCRIPTION },
     { name: "twitter:image", content: ogImage },
+    ...(data?.miniAppEmbed ? miniAppMetaTags(data.miniAppEmbed) : []),
     { "script:ld+json": jsonLd },
   ];
 }

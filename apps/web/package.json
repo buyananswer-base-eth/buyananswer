@@ -17,6 +17,8 @@
   "dependencies": {
     "@buyananswer/sdk": "workspace:*",
     "@buyananswer/shared": "workspace:*",
+    "@farcaster/miniapp-sdk": "^0.3.0",
+    "@farcaster/miniapp-wagmi-connector": "^2.0.0",
     "@tanstack/react-query": "^5.62.7",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",

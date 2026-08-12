@@ -16,8 +16,10 @@
   // Reconcile on a schedule. Every 2 minutes keeps testnet latency low without hammering the RPC;
   // tune per environment. Each tick advances the per-chain cursor toward the confirmed head and is
   // idempotent, so overlapping/duplicate ticks never double-write (ADR-0024).
+  // Two crons: `*/2` reconciles money-state; `17 * * * *` ALSO runs the orphan-draft sweep. The
+  // handler branches on `controller.cron`, so the hourly tick reconciles too and is never a gap.
   "triggers": {
-    "crons": ["*/2 * * * *"]
+    "crons": ["*/2 * * * *", "17 * * * *"]
   },
   "d1_databases": [
     {
@@ -48,7 +50,9 @@
     // Max `eth_getLogs` block span per RPC call (public RPCs cap the range).
     "GETLOGS_RANGE": "2000",
     // Cap blocks scanned per invocation so backfill catches up across cron ticks within Worker limits.
-    "MAX_BLOCKS_PER_RUN": "100000"
+    "MAX_BLOCKS_PER_RUN": "100000",
+    // Age (hours) before an abandoned pending_payment draft is swept.
+    "ORPHAN_TTL_HOURS": "24"
     // RPC_URL_BASE_SEPOLIA and RECONCILE_TOKEN are secrets — provide via `.dev.vars` / CI, never git.
   },
 
@@ -74,7 +78,7 @@
     "production": {
       "name": "buyananswer-indexer-production",
       "triggers": {
-        "crons": ["*/2 * * * *"]
+        "crons": ["*/2 * * * *", "17 * * * *"]
       },
       "d1_databases": [
         {
@@ -92,7 +96,8 @@
         "CONFIRMATIONS": "5",
         // Base mainnet is high-traffic; a private provider handles this span comfortably.
         "GETLOGS_RANGE": "2000",
-        "MAX_BLOCKS_PER_RUN": "100000"
+        "MAX_BLOCKS_PER_RUN": "100000",
+        "ORPHAN_TTL_HOURS": "24"
       }
     }
   }

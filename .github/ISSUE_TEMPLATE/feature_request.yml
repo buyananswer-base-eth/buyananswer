@@ -40,7 +40,6 @@ body:
         - Smart contract (contracts)
         - API Worker (workers/api)
         - Indexer (workers/indexer)
-        - Farcaster frame (workers/frame)
         - SDK / shared packages
         - Developer experience, build, or CI
         - Not sure
