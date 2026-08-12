@@ -20,7 +20,7 @@ Please include as much of the following as you can:
 
 - A clear description of the issue and its security impact.
 - Step-by-step reproduction (proof-of-concept code, transaction hashes, or request/response captures).
-- The affected component (contract, API, web app, or frame) and, if known, the relevant address, file,
+- The affected component (contract, API, indexer, or web app) and, if known, the relevant address, file,
   or endpoint.
 - Any suggested remediation.
 
@@ -35,7 +35,7 @@ you.
 
 - The escrow smart contract, `contracts/src/BuyAnAnswerEscrow.sol` (and its interface), and its **live
   Base mainnet deployment** at `0x04a814daa6421D5B0C7f3758476f0150D48198b6` — this holds real USDC.
-- The API, indexer, and Farcaster-frame services (`workers/`).
+- The API and indexer services (`workers/`).
 - The web application (`apps/web`).
 
 Vulnerability classes we especially care about: loss, theft, or freezing of escrowed funds; bypass of
@@ -102,7 +102,8 @@ credit and has no pause check, so credited balances stay pullable even while pau
   recipient withdraws themselves. Money is never stuck, but it does take a second transaction to land.
 - **Off-chain state is a mirror, not an authority.** If the indexer stalls, the app may lag the chain.
   It cannot cause a wrong payment — the contract is the only thing that moves funds.
-- **The Farcaster frame trusts its configured hub** to attribute a paid question to the right wallet.
+- **The Farcaster Mini App is the web app itself**, so it inherits the same wallet-signed session and
+  on-chain settlement path. It introduces no additional trusted party.
 
 ## Supported versions
 

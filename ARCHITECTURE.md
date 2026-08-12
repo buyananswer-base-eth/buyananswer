@@ -25,8 +25,7 @@ chain is the source of truth for every payment.
 ```mermaid
 flowchart LR
     subgraph Client
-      W[Web app<br/>React Router + wagmi]
-      F[Farcaster frame<br/>ask + pay in-feed]
+      W[Web app<br/>React Router + wagmi<br/>also runs as a Farcaster Mini App]
     end
     subgraph Cloudflare
       API[API Worker<br/>auth, profiles, drafts]
@@ -39,9 +38,7 @@ flowchart LR
     end
 
     W -->|SIWE + reads/writes content| API
-    F -->|hub-verified actions| API
     W -->|approve + ask/settle txns| ESC
-    F -->|builds txn for user's wallet| ESC
     ESC <-->|transfers| USDC
     ESC -->|events| IDX
     IDX -->|money-state only| DB
@@ -59,9 +56,10 @@ flowchart LR
   payment state.
 - **Web app (React Router).** The link-in-bio board, the ask-and-pay flow, and the creator inbox. It
   talks to both the API (content) and the contract (money, signed by the user's own wallet).
-- **Farcaster frame (Cloudflare Worker).** Lets someone ask and pay a creator directly inside a
-  Farcaster feed. It builds the transaction for the **user's** wallet to sign — it holds no keys and
-  moves no funds.
+- **Farcaster Mini App.** The same web app, loaded in a webview inside a Farcaster client with a
+  wallet provider injected. It is not a separate service: sharing a board renders an in-feed launch
+  button, and the ask-and-pay flow that runs is the identical one the web uses. A manifest at
+  `/.well-known/farcaster.json` and an `fc:miniapp` embed tag are all that distinguish it.
 
 ---
 
@@ -109,9 +107,9 @@ inputs are validated at the edge, and abuse controls are rate-limited and fail c
 |---|---|
 | Smart contract | Solidity 0.8.28, Foundry, OpenZeppelin (`Ownable2Step`, `Pausable`, `ReentrancyGuard`, `SafeERC20`) |
 | Chain / asset | Base · native USDC (6 decimals) |
-| Services | Cloudflare Workers (API, indexer, frame), D1 (SQL), KV (sessions & rate limits) |
+| Services | Cloudflare Workers (web, API, indexer), D1 (SQL), KV (sessions & rate limits) |
 | Web | React Router (SSR), wagmi + viem, Sign-In with Ethereum |
-| Distribution | Farcaster frame |
+| Distribution | Farcaster Mini App |
 
 The contract is a separate Foundry toolchain from the TypeScript monorepo; see
 [`contracts/README.md`](./contracts/README.md) to build and test it.

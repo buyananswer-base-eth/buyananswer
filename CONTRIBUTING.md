@@ -71,14 +71,14 @@ changing it means a new deployment and a migration. So:
 
 A few invariants hold across the codebase. Breaking one is a design change, not a refactor:
 
-- **The indexer is the sole writer of payment state off-chain.** The API and the frame never write
-  money columns. The chain decides; the database mirrors.
+- **The indexer is the sole writer of payment state off-chain.** Nothing else writes money columns.
+  The chain decides; the database mirrors.
 - **Addresses are never hardcoded.** They come from
   [`packages/shared/src/contracts/deployments.ts`](./packages/shared/src/contracts/deployments.ts),
   which holds the live records and drives real behaviour.
 - **Server-side authorization on every state-changing request**, against a wallet-signed session.
-- **Fail closed.** Signature verification, frame-hub validation, and the reconcile endpoint all reject
-  on error or misconfiguration rather than degrading.
+- **Fail closed.** Signature verification and the reconcile endpoint reject on error or
+  misconfiguration rather than degrading.
 
 ## Licensing
 

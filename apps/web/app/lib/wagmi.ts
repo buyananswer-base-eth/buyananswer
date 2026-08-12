@@ -6,6 +6,7 @@
 // Connectors: injected + Coinbase Wallet always; WalletConnect only when a project id is configured
 // (VITE_WALLETCONNECT_PROJECT_ID) so dev and CI need no WalletConnect Cloud account.
 
+import { default as miniAppConnector } from "@farcaster/miniapp-wagmi-connector";
 import { base, baseSepolia } from "viem/chains";
 import { http, createConfig } from "wagmi";
 import type { Config } from "wagmi";
@@ -43,6 +44,11 @@ export function getWagmiConfig(): Config {
 
   const projectId = walletConnectProjectId();
   const connectors = [
+    // FIRST so it wins auto-connect inside a Farcaster client (ADR-0042). Outside one the
+    // connector simply reports unavailable and the ordinary connectors take over, so this is safe
+    // to include unconditionally — and it must be, because the config is built once and memoized
+    // before the async `sdk.isInMiniApp()` check could possibly have resolved.
+    miniAppConnector(),
     injected(),
     coinbaseWallet({ appName: "BuyAnAnswer" }),
     ...(projectId ? [walletConnect({ projectId })] : []),

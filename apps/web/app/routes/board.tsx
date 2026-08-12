@@ -14,6 +14,7 @@ import { ErrorState } from "../components/states/ErrorState";
 import { LinkButton } from "../components/ui/LinkButton";
 import { fetchBoard, siteOrigin } from "../lib/board.server";
 import { validateHandle } from "../lib/handle";
+import { buildMiniAppEmbed, miniAppMetaTags } from "../lib/miniapp";
 import type { Route } from "./+types/board";
 
 export async function loader({ request, params }: Route.LoaderArgs) {
@@ -29,6 +30,13 @@ export async function loader({ request, params }: Route.LoaderArgs) {
     creator: result.creator,
     canonicalUrl: `${origin}/${v.handle}`,
     ogImageUrl: `${origin}/og.png`,
+    // Farcaster Mini App embed (ADR-0042). A board is THE shareable artefact, so casting one should
+    // open straight into paying — the launch URL is the ask page, not the board or a landing page.
+    miniAppEmbed: buildMiniAppEmbed({
+      origin,
+      launchPath: `/ask/${v.handle}`,
+      buttonTitle: `Ask ${result.creator.displayName}`.slice(0, 32),
+    }),
   };
 }
 
@@ -60,6 +68,7 @@ export function meta({ data }: Route.MetaArgs) {
     { name: "twitter:description", content: description },
     { name: "twitter:image", content: data.ogImageUrl },
     { tagName: "link", rel: "canonical", href: data.canonicalUrl },
+    ...miniAppMetaTags(data.miniAppEmbed),
   ];
 }
 
