@@ -38,17 +38,26 @@ function rpcUrl(raw: unknown): string | undefined {
   return typeof raw === "string" && raw.trim().length > 0 ? raw.trim() : undefined;
 }
 
-/** Get (or lazily build) the wagmi config. Call only on the client. */
-export function getWagmiConfig(): Config {
+/**
+ * Get (or lazily build) the wagmi config. Call only on the client.
+ *
+ * `inMiniApp` decides whether the Farcaster connector is included AT ALL. It is deliberately NOT
+ * added unconditionally: doing so broke `writeContract` on the open web with
+ * "connector.getChainId is not a function", which surfaced to users as a failed settle
+ * (ADR-0044). The Farcaster connector expects a host-injected provider, and outside a Farcaster
+ * client it does not degrade cleanly enough to sit in the connector list.
+ *
+ * An earlier comment here claimed the connector *had* to be unconditional because the config is
+ * memoized before an async `isInMiniApp()` could resolve. That was wrong — `Web3Provider` builds
+ * this inside an async effect and can simply await the check first.
+ */
+export function getWagmiConfig(inMiniApp = false): Config {
   if (config) return config;
 
   const projectId = walletConnectProjectId();
   const connectors = [
-    // FIRST so it wins auto-connect inside a Farcaster client (ADR-0042). Outside one the
-    // connector simply reports unavailable and the ordinary connectors take over, so this is safe
-    // to include unconditionally — and it must be, because the config is built once and memoized
-    // before the async `sdk.isInMiniApp()` check could possibly have resolved.
-    miniAppConnector(),
+    // Only inside a Farcaster client, and first so it wins auto-connect there (ADR-0042).
+    ...(inMiniApp ? [miniAppConnector()] : []),
     injected(),
     coinbaseWallet({ appName: "BuyAnAnswer" }),
     ...(projectId ? [walletConnect({ projectId })] : []),

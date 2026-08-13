@@ -7,7 +7,7 @@
 
 import { type ReactNode, useEffect, useState } from "react";
 import { AppSkeleton } from "../components/AppSkeleton";
-import { useMiniAppReady } from "../hooks/useMiniApp";
+import { detectMiniApp, useMiniAppReady } from "../hooks/useMiniApp";
 
 type Runtime = {
   WagmiProvider: typeof import("wagmi")["WagmiProvider"];
@@ -22,17 +22,22 @@ export function Web3Provider({ children }: { children: ReactNode }) {
   useEffect(() => {
     let active = true;
     void (async () => {
-      const [wagmi, reactQuery, { getWagmiConfig }, { getQueryClient }] = await Promise.all([
-        import("wagmi"),
-        import("@tanstack/react-query"),
-        import("../lib/wagmi"),
-        import("../lib/query"),
-      ]);
+      // Resolve the Farcaster host BEFORE building the config: the Mini App connector is only
+      // safe to include when we are actually inside a Farcaster client (ADR-0044). Detection is
+      // cached and failure-tolerant, so this costs one await and never blocks the open web.
+      const [wagmi, reactQuery, { getWagmiConfig }, { getQueryClient }, inMiniApp] =
+        await Promise.all([
+          import("wagmi"),
+          import("@tanstack/react-query"),
+          import("../lib/wagmi"),
+          import("../lib/query"),
+          detectMiniApp(),
+        ]);
       if (!active) return;
       setRuntime({
         WagmiProvider: wagmi.WagmiProvider,
         QueryClientProvider: reactQuery.QueryClientProvider,
-        config: getWagmiConfig(),
+        config: getWagmiConfig(inMiniApp),
         queryClient: getQueryClient(),
       });
     })();
