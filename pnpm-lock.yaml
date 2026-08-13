@@ -46,7 +46,7 @@ catalogs:
       specifier: ^3.114.17
       version: 3.114.17
     zod:
-      specifier: ^3.24.1
+      specifier: ^3.25.76
       version: 3.25.76
 
 importers:
