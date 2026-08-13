@@ -15,14 +15,16 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import type { Hex } from "viem";
 import { useAccount, usePublicClient, useWriteContract } from "wagmi";
 import { type AnalyticsEvent, track } from "../lib/analytics";
-import { getQuestion } from "../lib/api";
+import { getQuestion, postReconcileNudge } from "../lib/api";
 import { canAskOn, escrowAddressFor } from "../lib/chains";
 import { isTerminalStatus } from "../lib/status";
 import { isUserRejection, mapSettleError } from "../lib/txerror";
 
 /** Poll cadence + how many polls before we show the "taking longer than usual" hint (~24s). */
-const POLL_INTERVAL_MS = 4_000;
-const SLOW_AFTER_POLLS = 6;
+// Tightened alongside the indexer nudge below. The chain is final in ~12s (2s block + 5
+// confirmations); polling every 4s meant up to 4s of that was pure client-side dead time.
+const POLL_INTERVAL_MS = 1_500;
+const SLOW_AFTER_POLLS = 16;
 
 /** The four settle actions this hook drives. */
 export type SettleKind = "answer" | "decline" | "cancel" | "reclaim";
@@ -142,6 +144,11 @@ export function useSettleAction(kind: SettleKind): UseSettleAction {
         }
         attempts += 1;
         setPhase(token, { step: "indexing", hash, slow: attempts >= SLOW_AFTER_POLLS });
+        // Nudge the indexer to reconcile NOW instead of waiting for its cron. Fire-and-forget and
+        // never throws. Repeated each tick on purpose: the indexer only scans to
+        // `head - CONFIRMATIONS`, so a single nudge right after the receipt would scan past the
+        // new event. Idempotent server-side, so repeats are safe.
+        void postReconcileNudge();
         await interruptibleSleep(POLL_INTERVAL_MS);
       }
     },

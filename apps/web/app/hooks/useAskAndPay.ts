@@ -31,15 +31,16 @@ import type { Hex } from "viem";
 import { useAccount, usePublicClient, useSignTypedData, useWriteContract } from "wagmi";
 import { confirmApproval } from "../lib/allowance";
 import { track } from "../lib/analytics";
-import { ApiError, NetworkError, getQuestion, postQuestion } from "../lib/api";
+import { ApiError, NetworkError, getQuestion, postQuestion, postReconcileNudge } from "../lib/api";
 import { canAskOn, escrowAddressFor, usdcAddressFor } from "../lib/chains";
 import { isUserRejection, txErrorMessage } from "../lib/txerror";
 
 /** Permit signatures are short-lived — they only need to outlive the single ask transaction. */
 const PERMIT_TTL_SECONDS = 30 * 60;
 /** Poll cadence + how many polls before we show the "taking longer than usual" hint (~30s). */
-const POLL_INTERVAL_MS = 4_000;
-const SLOW_AFTER_POLLS = 6;
+// Tightened alongside the indexer nudge below — see useSettleAction for the reasoning.
+const POLL_INTERVAL_MS = 1_500;
+const SLOW_AFTER_POLLS = 16;
 
 /** What the caller supplies to ask a question. `amount` is USDC base units (≥ the creator's min). */
 export interface AskInput {
@@ -169,6 +170,9 @@ export function useAskAndPay(): UseAskAndPay {
         }
         attempts += 1;
         setPhase(token, { step: "indexing", id, hash, slow: attempts >= SLOW_AFTER_POLLS });
+        // Ask the indexer to reconcile now rather than on its cron. Fire-and-forget, never throws,
+        // and repeated each tick because the indexer only scans to `head - CONFIRMATIONS`.
+        void postReconcileNudge();
         await interruptibleSleep(POLL_INTERVAL_MS);
       }
     },
