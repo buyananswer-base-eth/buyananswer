@@ -6,9 +6,9 @@ packages:
 # Single-sourced tool versions shared across every workspace package.
 # Reference with "catalog:" in a package's devDependencies.
 catalog:
-  typescript: ^5.7.3
+  typescript: ^7.0.2
   vitest: ^2.1.9
-  '@biomejs/biome': ^1.9.4
+  '@biomejs/biome': ^2.5.7
   # Data layer (Session 5): D1 (SQLite) via Drizzle + Cloudflare tooling.
   drizzle-orm: ^0.44.2
   drizzle-kit: ^0.31.1
