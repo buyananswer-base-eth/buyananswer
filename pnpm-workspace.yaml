@@ -10,7 +10,7 @@ catalog:
   vitest: ^2.1.9
   '@biomejs/biome': ^1.9.4
   # Data layer (Session 5): D1 (SQLite) via Drizzle + Cloudflare tooling.
-  drizzle-orm: ^0.44.2
+  drizzle-orm: ^0.45.2
   drizzle-kit: ^0.31.1
   # Worker API (Session 6): Hono router, zod validation, viem (SIWE verify + nonce).
   hono: ^4.13.1
