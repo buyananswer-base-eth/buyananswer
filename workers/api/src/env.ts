@@ -30,6 +30,13 @@ export interface Env {
   RPC_URL_BASE?: string;
   /** Base Sepolia RPC (secret). Same purpose as {@link RPC_URL_BASE}, for the testnet chain. */
   RPC_URL_BASE_SEPOLIA?: string;
+  /**
+   * Service binding to the indexer Worker, backing `POST /reconcile-nudge`. Absent ⇒ the nudge is a
+   * no-op and the indexer's cron remains the only trigger (slower, still correct).
+   */
+  INDEXER?: Fetcher;
+  /** Bearer for the indexer's `/reconcile` (secret). Must match the indexer's own value. */
+  RECONCILE_TOKEN?: string;
 }
 
 /** RPC URL for `chainId`, used for smart-wallet signature verification. `undefined` ⇒ EOA-only. */

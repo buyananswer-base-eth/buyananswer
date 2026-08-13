@@ -15,6 +15,7 @@ import { avatarRoutes } from "./routes/avatar.js";
 import { boardRoutes } from "./routes/board.js";
 import { profileRoutes } from "./routes/profile.js";
 import { questionRoutes } from "./routes/questions.js";
+import { reconcileRoutes } from "./routes/reconcile.js";
 
 /** Service name stamped on every structured log line (FUNCTIONAL_SPEC §11). */
 export const SVC = "buyananswer-api";
@@ -52,6 +53,7 @@ export function createApp() {
   app.route("/", boardRoutes);
   app.route("/", avatarRoutes);
   app.route("/", questionRoutes);
+  app.route("/", reconcileRoutes);
   app.route("/", answerRoutes);
 
   return app;

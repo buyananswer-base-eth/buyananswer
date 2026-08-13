@@ -28,6 +28,13 @@ export const LIMITS = {
   questionPublish: { prefix: "question_publish", limit: 30, windowSeconds: 60 },
   /** Avatar upload (an R2 write of up to 5 MB). */
   avatarUpload: { prefix: "avatar_upload", limit: 10, windowSeconds: 60 },
+  /**
+   * Indexer nudge. Deliberately the loosest policy here: the client fires one per poll tick while
+   * waiting for a settle to index, so a single legitimate payment burns ~10-15 in under a minute.
+   * Each nudge costs one indexer invocation and a `getBlockNumber`, and reconcile is idempotent, so
+   * the ceiling exists to bound cost and RPC load — not to protect correctness.
+   */
+  reconcileNudge: { prefix: "reconcile_nudge", limit: 60, windowSeconds: 60 },
 } satisfies Record<string, RateLimitPolicy>;
 
 /** A rate-limit middleware for `policy`, keyed by client IP, reading the `RATELIMIT` KV namespace. */

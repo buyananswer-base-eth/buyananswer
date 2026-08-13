@@ -255,6 +255,24 @@ export function postAnswer(id: string, body: string): Promise<{ answer: Question
 }
 
 /** `POST /questions/:id/publish` — the answerer opts an answered Q→A into the public card (`is_public`). */
+/**
+ * Ask the indexer to reconcile now rather than on its next cron tick.
+ *
+ * A pure latency optimisation, and deliberately best-effort: it NEVER throws, so a failed nudge can
+ * never surface as an error in the middle of someone's payment. If it doesn't land, the cron still
+ * reconciles and the poll still resolves — just slower, exactly as before this existed.
+ *
+ * Called on every poll tick, not once: the indexer only scans to `head - CONFIRMATIONS`, so a nudge
+ * fired the instant a receipt lands would scan past the new event and find nothing.
+ */
+export async function postReconcileNudge(): Promise<void> {
+  try {
+    await request<{ nudged: boolean }>("/reconcile-nudge", { method: "POST" });
+  } catch {
+    // Intentionally swallowed — see above.
+  }
+}
+
 export function postPublish(id: string): Promise<{ question: QuestionRecord }> {
   return request<{ question: QuestionRecord }>(`/questions/${encodeURIComponent(id)}/publish`, {
     method: "POST",

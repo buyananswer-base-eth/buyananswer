@@ -85,6 +85,10 @@
         { "binding": "RATELIMIT", "id": "97269f7354e442f495f0284dfa9cb054" }
       ],
       "r2_buckets": [{ "binding": "AVATARS", "bucket_name": "buyananswer-avatars-production" }],
+      // Backs POST /reconcile-nudge: the browser can never hold the indexer's bearer token, so the
+      // API forwards over a service binding (Worker-to-Worker, never leaves Cloudflare) and attaches
+      // the token server-side. Absent ⇒ the nudge no-ops and the cron remains the only trigger.
+      "services": [{ "binding": "INDEXER", "service": "buyananswer-indexer-production" }],
       "vars": {
         // Serve avatars from the app origin in production rather than the Worker's own route.
         "AVATAR_PUBLIC_BASE_URL": ""

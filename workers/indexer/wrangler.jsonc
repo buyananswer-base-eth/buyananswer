@@ -16,10 +16,13 @@
   // Reconcile on a schedule. Every 2 minutes keeps testnet latency low without hammering the RPC;
   // tune per environment. Each tick advances the per-chain cursor toward the confirmed head and is
   // idempotent, so overlapping/duplicate ticks never double-write (ADR-0024).
-  // Two crons: `*/2` reconciles money-state; `17 * * * *` ALSO runs the orphan-draft sweep. The
-  // handler branches on `controller.cron`, so the hourly tick reconciles too and is never a gap.
+  // Two crons. `* * * * *` reconciles money-state every minute — Cloudflare's floor, and only a
+  // BACKSTOP: the app nudges the indexer directly after a settle (API POST /reconcile-nudge), so the
+  // cron matters when a nudge is missed (tab closed, request failed). `17 * * * *` ALSO runs the
+  // orphan-draft sweep; the handler branches on `controller.cron`, so the hourly tick reconciles too
+  // and is never a gap in indexing.
   "triggers": {
-    "crons": ["*/2 * * * *", "17 * * * *"]
+    "crons": ["* * * * *", "17 * * * *"]
   },
   "d1_databases": [
     {
@@ -78,7 +81,7 @@
     "production": {
       "name": "buyananswer-indexer-production",
       "triggers": {
-        "crons": ["*/2 * * * *", "17 * * * *"]
+        "crons": ["* * * * *", "17 * * * *"]
       },
       "d1_databases": [
         {
