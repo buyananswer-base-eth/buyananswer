@@ -14,7 +14,7 @@ catalog:
   drizzle-kit: ^0.31.1
   # Worker API (Session 6): Hono router, zod validation, viem (SIWE verify + nonce).
   hono: ^4.13.1
-  zod: ^3.24.1
+  zod: ^3.25.76
   viem: ^2.21.0
   # Vitest pool that runs tests inside a real workerd + Miniflare (D1/KV/R2). 0.6.x targets
   # vitest 2.0–2.1 and bundles wrangler 3 / miniflare 3, so it stays Node-20 safe (ADR-0021).
