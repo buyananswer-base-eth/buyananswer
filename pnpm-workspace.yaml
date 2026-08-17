@@ -23,7 +23,7 @@ catalog:
   # Node 20.19.5. 3.114.x runs on Node 20 and fully supports `d1 migrations apply --local`.
   # Revisit (bump to wrangler 4) when the repo moves to Node 22. (ADR-0021)
   wrangler: ^3.114.17
-  '@cloudflare/workers-types': ^5.20260809.1
+  '@cloudflare/workers-types': ^5.20260814.1
   # Local, in-memory SQLite used only to prove schema constraints in Vitest.
   better-sqlite3: ^11.8.0
   '@types/better-sqlite3': ^7.6.11
